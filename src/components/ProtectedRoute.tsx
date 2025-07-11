@@ -9,7 +9,7 @@ interface ProtectedRouteProps {
 }
 
 // Danh sách các trang công khai không cần đăng nhập
-const publicRoutes = ["/login", "/"];
+const publicRoutes = ["/login/", "/"];
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     const { user, loading } = useAuth();
@@ -32,6 +32,12 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
         }
     }, [user, loading, router, pathname, isPublicRoute]);
 
+    // Nếu đang loading và là trang công khai -> hiển thị nội dung ngay
+    if (loading && isPublicRoute) {
+        return <>{children}</>;
+    }
+
+    // Nếu đang loading và không phải trang công khai -> hiển thị loading
     if (loading) {
         return (
             <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">

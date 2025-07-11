@@ -1,12 +1,14 @@
 import {
-    signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
-    signOut,
-    onAuthStateChanged,
-    User,
-    sendPasswordResetEmail,
     GoogleAuthProvider,
+    onAuthStateChanged,
+    sendPasswordResetEmail,
+    signInWithEmailAndPassword,
     signInWithPopup,
+    signOut,
+    User,
+    setPersistence,
+    browserSessionPersistence,
 } from "firebase/auth";
 import { auth } from "./firebase";
 
@@ -15,8 +17,9 @@ export const signIn = async (email: string, password: string) => {
     try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         return { user: userCredential.user, error: null };
-    } catch (error: any) {
-        return { user: null, error: error.message };
+    } catch (error: unknown) {
+        const authError = error as { message: string };
+        return { user: null, error: authError.message };
     }
 };
 
@@ -25,18 +28,37 @@ export const signUp = async (email: string, password: string) => {
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         return { user: userCredential.user, error: null };
-    } catch (error: any) {
-        return { user: null, error: error.message };
+    } catch (error: unknown) {
+        const authError = error as { message: string };
+        return { user: null, error: authError.message };
     }
 };
 
 // Sign out
 export const signOutUser = async () => {
     try {
+        // Đăng xuất khỏi Firebase Auth
         await signOut(auth);
+
+        // Xóa dữ liệu persist bằng cách chuyển về session persistence
+        await setPersistence(auth, browserSessionPersistence);
+
+        // Xóa dữ liệu từ localStorage nếu có
+        if (typeof window !== "undefined") {
+            localStorage.removeItem("firebase:authUser");
+            localStorage.removeItem("firebase:persistence");
+            // Xóa tất cả các key liên quan đến Firebase
+            Object.keys(localStorage).forEach((key) => {
+                if (key.startsWith("firebase:")) {
+                    localStorage.removeItem(key);
+                }
+            });
+        }
+
         return { error: null };
-    } catch (error: any) {
-        return { error: error.message };
+    } catch (error: unknown) {
+        const authError = error as { message: string };
+        return { error: authError.message };
     }
 };
 
@@ -55,8 +77,9 @@ export const checkAndRefreshSession = async () => {
             return { user: currentUser, error: null };
         }
         return { user: null, error: null };
-    } catch (error: any) {
-        return { user: null, error: error.message };
+    } catch (error: unknown) {
+        const authError = error as { message: string };
+        return { user: null, error: authError.message };
     }
 };
 
@@ -70,8 +93,9 @@ export const resetPassword = async (email: string) => {
     try {
         await sendPasswordResetEmail(auth, email);
         return { error: null };
-    } catch (error: any) {
-        return { error: error.message };
+    } catch (error: unknown) {
+        const authError = error as { message: string };
+        return { error: authError.message };
     }
 };
 
@@ -92,12 +116,13 @@ export const signInWithGoogle = async () => {
         }
 
         return { user: userCredential.user, error: null };
-    } catch (error: any) {
+    } catch (error: unknown) {
+        const authError = error as { message: string; code?: string };
         // Nếu user đóng popup hoặc có lỗi khác
-        if (error.code === "auth/popup-closed-by-user") {
+        if (authError.code === "auth/popup-closed-by-user") {
             return { user: null, error: null }; // Không hiển thị lỗi nếu user đóng popup
         }
-        return { user: null, error: error.message };
+        return { user: null, error: authError.message };
     }
 };
 

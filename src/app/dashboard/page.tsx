@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button";
 import { PiggyBank, Plus, TrendingDown, TrendingUp, Wallet } from "lucide-react";
 import DashboardLayout from "@/components/DashboardLayout";
-import Logo from "@/components/Logo";
 
 export default function DashboardPage() {
     return (

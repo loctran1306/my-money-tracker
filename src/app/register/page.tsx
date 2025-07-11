@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
-import { Eye, EyeOff, Mail, Lock, User, UserPlus } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, User } from "lucide-react";
 import { signUp, signInWithGoogle } from "@/lib/firebase-auth";
 import { useRouter } from "next/navigation";
 import Logo from "@/components/Logo";

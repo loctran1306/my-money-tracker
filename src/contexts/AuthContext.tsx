@@ -2,16 +2,18 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { User } from "firebase/auth";
-import { onAuthStateChange, checkAndRefreshSession } from "@/lib/firebase-auth";
+import { onAuthStateChange, checkAndRefreshSession, signOutUser } from "@/lib/firebase-auth";
 
 interface AuthContextType {
     user: User | null;
     loading: boolean;
+    logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
     user: null,
     loading: true,
+    logout: async () => {},
 });
 
 export const useAuth = () => {
@@ -36,6 +38,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 }
             } catch (error) {
                 console.log("Session refresh error:", error);
+            } finally {
+                // Set loading thành false sau khi kiểm tra session
+                setLoading(false);
             }
         };
 
@@ -54,9 +59,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return () => unsubscribe();
     }, []);
 
+    const logout = async () => {
+        try {
+            await signOutUser();
+            setUser(null);
+        } catch (error) {
+            console.error("Logout error:", error);
+        }
+    };
+
     const value = {
         user,
         loading,
+        logout,
     };
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

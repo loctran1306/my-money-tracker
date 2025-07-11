@@ -1,17 +1,15 @@
 import {
-    collection,
-    doc,
-    getDocs,
-    getDoc,
     addDoc,
-    updateDoc,
+    collection,
     deleteDoc,
-    query,
-    where,
+    doc,
+    getDoc,
+    getDocs,
     orderBy,
-    limit,
+    query,
     Timestamp,
-    runTransaction,
+    updateDoc,
+    where,
     writeBatch,
 } from "firebase/firestore";
 import { db } from "./firebase";
@@ -71,8 +69,8 @@ export const addTotalMonth = async (totalMonth: Omit<TotalMonth, "id" | "created
             updatedAt: Timestamp.now(),
         });
         return { id: docRef.id, error: null };
-    } catch (error: any) {
-        return { id: null, error: error.message };
+    } catch (error: unknown) {
+        return { id: null, error: (error as { message: string }).message };
     }
 };
 
@@ -85,8 +83,8 @@ export const getTotalMonths = async (userId: string) => {
             ...doc.data(),
         }));
         return { totalMonths, error: null };
-    } catch (error: any) {
-        return { totalMonths: [], error: error.message };
+    } catch (error: unknown) {
+        return { totalMonths: [], error: (error as { message: string }).message };
     }
 };
 
@@ -99,8 +97,8 @@ export const getTotalMonthByMonth = async (userId: string, month: string) => {
             return { totalMonth: { id: doc.id, ...doc.data() }, error: null };
         }
         return { totalMonth: null, error: null };
-    } catch (error: any) {
-        return { totalMonth: null, error: error.message };
+    } catch (error: unknown) {
+        return { totalMonth: null, error: (error as { message: string }).message };
     }
 };
 
@@ -112,8 +110,8 @@ export const updateTotalMonth = async (id: string, updates: Partial<TotalMonth>)
             updatedAt: Timestamp.now(),
         });
         return { error: null };
-    } catch (error: any) {
-        return { error: error.message };
+    } catch (error: unknown) {
+        return { error: (error as { message: string }).message };
     }
 };
 
@@ -121,8 +119,8 @@ export const deleteTotalMonth = async (id: string) => {
     try {
         await deleteDoc(doc(db, "totalMonth", id));
         return { error: null };
-    } catch (error: any) {
-        return { error: error.message };
+    } catch (error: unknown) {
+        return { error: (error as { message: string }).message };
     }
 };
 
@@ -135,8 +133,8 @@ export const addNote = async (note: Omit<Note, "id" | "createdAt" | "updatedAt">
             updatedAt: Timestamp.now(),
         });
         return { id: docRef.id, error: null };
-    } catch (error: any) {
-        return { id: null, error: error.message };
+    } catch (error: unknown) {
+        return { id: null, error: (error as { message: string }).message };
     }
 };
 
@@ -160,8 +158,8 @@ export const getNotes = async (userId: string, idTotalMonth?: string) => {
             ...doc.data(),
         }));
         return { notes, error: null };
-    } catch (error: any) {
-        return { notes: [], error: error.message };
+    } catch (error: unknown) {
+        return { notes: [], error: (error as { message: string }).message };
     }
 };
 
@@ -176,8 +174,8 @@ export const getNotesByMonth = async (userId: string, month: string) => {
         // Lấy notes của tháng đó
         const { notes } = await getNotes(userId, totalMonth.id);
         return { notes, error: null };
-    } catch (error: any) {
-        return { notes: [], error: error.message };
+    } catch (error: unknown) {
+        return { notes: [], error: (error as { message: string }).message };
     }
 };
 
@@ -189,8 +187,8 @@ export const updateNote = async (id: string, updates: Partial<Note>) => {
             updatedAt: Timestamp.now(),
         });
         return { error: null };
-    } catch (error: any) {
-        return { error: error.message };
+    } catch (error: unknown) {
+        return { error: (error as { message: string }).message };
     }
 };
 
@@ -198,8 +196,8 @@ export const deleteNote = async (id: string) => {
     try {
         await deleteDoc(doc(db, "notes", id));
         return { error: null };
-    } catch (error: any) {
-        return { error: error.message };
+    } catch (error: unknown) {
+        return { error: (error as { message: string }).message };
     }
 };
 
@@ -212,8 +210,8 @@ export const createUser = async (user: Omit<User, "id" | "createdAt" | "updatedA
             updatedAt: Timestamp.now(),
         });
         return { id: docRef.id, error: null };
-    } catch (error: any) {
-        return { id: null, error: error.message };
+    } catch (error: unknown) {
+        return { id: null, error: (error as { message: string }).message };
     }
 };
 
@@ -226,8 +224,8 @@ export const getUser = async (id: string) => {
         } else {
             return { user: null, error: "User not found" };
         }
-    } catch (error: any) {
-        return { user: null, error: error.message };
+    } catch (error: unknown) {
+        return { user: null, error: (error as { message: string }).message };
     }
 };
 
@@ -239,8 +237,8 @@ export const updateUser = async (id: string, updates: Partial<User>) => {
             updatedAt: Timestamp.now(),
         });
         return { error: null };
-    } catch (error: any) {
-        return { error: error.message };
+    } catch (error: unknown) {
+        return { error: (error as { message: string }).message };
     }
 };
 
@@ -287,7 +285,7 @@ export const addNoteWithTotalMonth = async (
         if (totalMonth) {
             // Cập nhật totalMonth hiện có
             totalMonthId = totalMonth.id!;
-            const newTotal = (totalMonth as any).total + 1; // Luôn tăng 1 cho mỗi note
+            const newTotal = (totalMonth as TotalMonth).total + 1; // Luôn tăng 1 cho mỗi note
             batch.update(doc(db, "totalMonth", totalMonthId), {
                 total: newTotal,
                 updatedAt: Timestamp.now(),
@@ -318,8 +316,8 @@ export const addNoteWithTotalMonth = async (
 
         await batch.commit();
         return { noteId: noteRef.id, totalMonthId, error: null };
-    } catch (error: any) {
-        return { noteId: null, totalMonthId: null, error: error.message };
+    } catch (error: unknown) {
+        return { noteId: null, totalMonthId: null, error: (error as { message: string }).message };
     }
 };
 
@@ -369,8 +367,8 @@ export const getNotesByCategory = async (userId: string, category: ExpenseCatego
             ...doc.data(),
         }));
         return { notes, error: null };
-    } catch (error: any) {
-        return { notes: [], error: error.message };
+    } catch (error: unknown) {
+        return { notes: [], error: (error as { message: string }).message };
     }
 };
 
@@ -397,8 +395,8 @@ export const getNotesByCategoryAndMonth = async (userId: string, category: Expen
             ...doc.data(),
         }));
         return { notes, error: null };
-    } catch (error: any) {
-        return { notes: [], error: error.message };
+    } catch (error: unknown) {
+        return { notes: [], error: (error as { message: string }).message };
     }
 };
 
@@ -425,13 +423,14 @@ export const getCategoryStatistics = async (userId: string, month?: string) => {
         });
 
         // Đếm số lượng notes theo category
-        notes.forEach((note: any) => {
-            statistics[note.category as ExpenseCategory]++;
+        notes.forEach((note) => {
+            const noteData = note as unknown as { category: ExpenseCategory };
+            statistics[noteData.category]++;
         });
 
         return { statistics, error: null };
-    } catch (error: any) {
-        return { statistics: {}, error: error.message };
+    } catch (error: unknown) {
+        return { statistics: {}, error: (error as { message: string }).message };
     }
 };
 

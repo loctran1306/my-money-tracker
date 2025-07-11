@@ -2,26 +2,19 @@
 
 import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
     BarChart3,
     CreditCard,
     Home,
-    ChevronLeft,
-    ChevronRight,
     PieChart,
     Settings,
     TrendingUp,
-    X,
     LogOut,
     User,
-    Mail,
     Check,
-    ChevronUp,
     Loader2,
 } from "lucide-react";
-import { signOutUser } from "@/lib/firebase-auth";
 import Logo from "@/components/Logo";
 import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
@@ -71,7 +64,7 @@ const menuItems = [
 ];
 
 export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
-    const { user } = useAuth();
+    const { user, logout } = useAuth();
     const router = useRouter();
     const pathname = usePathname();
     const [loading, setLoading] = useState<string | null>(null);
@@ -79,10 +72,8 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
     const handleLogout = async () => {
         setLoading("logout");
         try {
-            const { error } = await signOutUser();
-            if (!error) {
-                router.push("/login");
-            }
+            await logout();
+            router.push("/login");
         } catch (error) {
             console.error("Logout error:", error);
         } finally {
@@ -162,7 +153,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
                         </>
                     ) : (
                         <div className="w-full flex justify-center">
-                            <Logo onClick={onToggle} size={24} showText={false} />
+                            <Logo onClick={onToggle} showText={false} />
                         </div>
                     )}
                 </div>
