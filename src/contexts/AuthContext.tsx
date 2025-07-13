@@ -6,7 +6,10 @@ import {
   validateUserFromLocalStorage,
 } from '@/lib/supabase-auth';
 import { selectUser, selectUserLoading } from '@/store/selectors/userSelectors';
-import { clearTransactions } from '@/store/slices/transactionSlice';
+import {
+  clearTransactions,
+  fetchCategories,
+} from '@/store/slices/transactionSlice';
 import { logout as logoutThunk, setUser } from '@/store/slices/userSlice';
 import { User } from '@supabase/supabase-js';
 import React, {
@@ -46,6 +49,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
   const loading = useAppSelector(selectUserLoading);
+  const categories = useAppSelector((state) => state.transactions.categories);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastUserRef = useRef<User | null>(null);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
@@ -61,9 +65,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     // Set timeout fallback để đảm bảo loading state được clear
     timeoutRef.current = setTimeout(() => {
-      console.log(
-        '⏰ AuthProvider: Timeout fallback - setting loading to false'
-      );
       dispatch(setUser(null));
     }, 3000);
 
@@ -123,8 +124,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             debounceRef.current = null;
           }
         };
-      } catch (error) {
-        console.error('Error initializing auth:', error);
+      } catch (error: unknown) {
+        if (error) {
+          console.error('Error initializing auth:', error);
+        }
         dispatch(setUser(null));
       }
     };
@@ -151,13 +154,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     };
   }, [dispatch]);
 
+  // Load categories once when user is authenticated
+  useEffect(() => {
+    if (user && categories.length === 0) {
+      dispatch(fetchCategories());
+    }
+  }, [user, categories.length, dispatch]);
+
   const logout = useCallback(async () => {
     try {
       await dispatch(logoutThunk()).unwrap();
       dispatch(clearTransactions());
       lastUserRef.current = null;
-    } catch (error) {
-      console.error('Logout error:', error);
+    } catch (error: unknown) {
+      if (error) {
+        console.error('Logout error:', error);
+      }
     }
   }, [dispatch]);
 

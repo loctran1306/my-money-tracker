@@ -79,7 +79,10 @@ export const getCurrentUser = async (): Promise<User | null> => {
     }
 
     return user;
-  } catch (error) {
+  } catch (error: unknown) {
+    if (error instanceof AuthError) {
+      return null;
+    }
     return null;
   }
 };
@@ -120,10 +123,11 @@ export const validateUserFromLocalStorage = async (): Promise<{
         return { user: session.user, needsRefresh: true };
       }
     }
-
     return { user: null, needsRefresh: true };
-  } catch (error) {
-    console.error('Error validating user from localStorage:', error);
+  } catch (error: unknown) {
+    if (error instanceof AuthError) {
+      return { user: null, needsRefresh: true };
+    }
     return { user: null, needsRefresh: true };
   }
 };
@@ -172,7 +176,7 @@ export const resetPassword = async (email: string) => {
 // Sign in with Google
 export const signInWithGoogle = async () => {
   try {
-    const { data, error } = await supabase.auth.signInWithOAuth({
+    const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,

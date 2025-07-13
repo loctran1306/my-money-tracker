@@ -73,9 +73,11 @@ const CardTransaction = () => {
           setAlert('Lỗi khi thêm giao dịch');
           setAlertType('error');
         }
-      } catch (error) {
-        setAlert('Lỗi khi thêm giao dịch');
-        setAlertType('error');
+      } catch (error: unknown) {
+        if (error) {
+          setAlert('Lỗi khi thêm giao dịch');
+          setAlertType('error');
+        }
       }
     }
     setTimeout(() => {

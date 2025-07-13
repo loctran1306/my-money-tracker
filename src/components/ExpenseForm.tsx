@@ -247,6 +247,7 @@ const ExpenseForm = ({ onSubmit }: ExpenseFormProps) => {
           variant="outline"
           onClick={resetForm}
           className="flex-1 h-12"
+          disabled={loading}
         >
           <RotateCcw className="w-5 h-5 mr-2" />
           Làm mới

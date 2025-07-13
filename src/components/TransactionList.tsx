@@ -6,7 +6,6 @@ import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { formatCurrency } from '@/lib/utils';
 import { selectUser } from '@/store/selectors/userSelectors';
 import {
-  fetchCategories,
   fetchTransactions,
   removeTransaction,
   setTransactionEdit,
@@ -50,7 +49,6 @@ const TransactionList = () => {
   useEffect(() => {
     if (user?.id) {
       dispatch(fetchTransactions(user.id));
-      dispatch(fetchCategories());
     }
   }, [user?.id, dispatch]);
 

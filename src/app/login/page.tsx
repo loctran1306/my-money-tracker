@@ -59,8 +59,10 @@ export default function LoginPage() {
       } else {
         setError(result.payload as string);
       }
-    } catch (error) {
-      setError('Đã xảy ra lỗi khi đăng nhập');
+    } catch (error: unknown) {
+      if (error) {
+        setError('Đã xảy ra lỗi khi đăng nhập');
+      }
     }
   };
 
@@ -74,8 +76,10 @@ export default function LoginPage() {
         setError(result.payload as string);
       }
       // Với Supabase, Google OAuth sẽ redirect đến callback route
-    } catch (error) {
-      setError('Đã xảy ra lỗi khi đăng nhập với Google');
+    } catch (error: unknown) {
+      if (error) {
+        setError('Đã xảy ra lỗi khi đăng nhập với Google');
+      }
     }
   };
 

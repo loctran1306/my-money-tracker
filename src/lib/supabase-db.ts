@@ -20,13 +20,11 @@ export const addTransaction = async (transaction: TransactionInput) => {
       .single();
 
     if (error) {
-      console.error('Error adding transaction:', error);
       return { data: null, error: error.message };
     }
 
     return { data, error: null };
   } catch (error: unknown) {
-    console.error('Error adding transaction:', error);
     return { data: null, error: (error as Error).message };
   }
 };
@@ -41,12 +39,10 @@ export const getTransactions = async (userId: string) => {
       .order('date', { ascending: false });
 
     if (error) {
-      console.error('Error fetching transactions:', error);
       return { data: [], error: error.message };
     }
     return { data: data || [], error: null };
   } catch (error: unknown) {
-    console.error('Error fetching transactions:', error);
     return { data: [], error: (error as Error).message };
   }
 };
@@ -56,7 +52,6 @@ export const getCategories = async () => {
     const { data, error } = await supabase.from('categories').select('*');
     return { data, error };
   } catch (error: unknown) {
-    console.error('Error fetching categories:', error);
     return { data: [], error: (error as Error).message };
   }
 };
@@ -77,13 +72,11 @@ export const updateTransaction = async (
       .single();
 
     if (error) {
-      console.error('Error updating transaction:', error);
       return { data: null, error: error.message };
     }
 
     return { data, error: null };
   } catch (error: unknown) {
-    console.error('Error updating transaction:', error);
     return { data: null, error: (error as Error).message };
   }
 };
@@ -108,13 +101,11 @@ export const deleteTransaction = async (id: string) => {
       .eq('user_id', user.id); // Chỉ cho phép xóa transaction của user hiện tại
 
     if (error) {
-      console.error('Error deleting transaction:', error);
       return { error: error.message };
     }
 
     return { error: null };
   } catch (error: unknown) {
-    console.error('Error deleting transaction:', error);
     return { error: (error as Error).message };
   }
 };
@@ -128,7 +119,6 @@ export const getTransactionStats = async (userId: string) => {
       .eq('user_id', userId);
 
     if (error) {
-      console.error('Error fetching transaction stats:', error);
       return { stats: null, error: error.message };
     }
 
@@ -150,7 +140,6 @@ export const getTransactionStats = async (userId: string) => {
 
     return { stats, error: null };
   } catch (error: unknown) {
-    console.error('Error calculating transaction stats:', error);
     return { stats: null, error: (error as Error).message };
   }
 };

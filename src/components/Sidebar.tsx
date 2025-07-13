@@ -1,25 +1,27 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import {
-  BarChart3,
-  CreditCard,
-  Home,
-  PieChart,
-  Settings,
-  TrendingUp,
-  LogOut,
-  User,
-  Check,
-  Loader2,
-} from 'lucide-react';
 import Logo from '@/components/Logo';
-import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/button';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { selectUser } from '@/store/selectors/userSelectors';
 import { logout as logoutThunk } from '@/store/slices/userSlice';
+import { motion } from 'framer-motion';
+import {
+  BarChart3,
+  Check,
+  CreditCard,
+  Home,
+  List,
+  Loader2,
+  LogOut,
+  PieChart,
+  Settings,
+  TrendingUp,
+  User,
+} from 'lucide-react';
+import Image from 'next/image';
+import { usePathname, useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -32,6 +34,12 @@ const menuItems = [
     icon: Home,
     href: '/dashboard',
     description: 'Tổng quan tài chính',
+  },
+  {
+    title: 'Danh mục',
+    icon: List,
+    href: '/categories',
+    description: 'Quản lý danh mục',
   },
   {
     title: 'Giao dịch',
@@ -77,8 +85,10 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
     try {
       await dispatch(logoutThunk()).unwrap();
       router.push('/login');
-    } catch (error) {
-      console.error('Logout error:', error);
+    } catch (error: unknown) {
+      if (error) {
+        console.error('Logout error:', error);
+      }
     } finally {
       setTimeout(() => {
         setLoading(null);
@@ -98,8 +108,10 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
       if (window.innerWidth < 768) {
         onToggle();
       }
-    } catch (error) {
-      console.error('Navigation error:', error);
+    } catch (error: unknown) {
+      if (error) {
+        console.error('Navigation error:', error);
+      }
     } finally {
       // Reset loading sau một khoảng thời gian ngắn để đảm bảo UI đã cập nhật
       setTimeout(() => {
@@ -111,10 +123,12 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
   const renderAvatar = (size: number = 48) => {
     if (user?.user_metadata?.avatar_url) {
       return (
-        <img
+        <Image
           className="rounded-full object-cover w-full h-full"
           alt="Profile Picture"
           src={user.user_metadata.avatar_url}
+          width={size}
+          height={size}
           onError={(e) => {
             // Fallback to default image if Google image fails
             const target = e.target as HTMLImageElement;

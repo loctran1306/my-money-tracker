@@ -1,18 +1,15 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { ModeToggle } from '@/components/mode-toggle';
-import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
-import { validateAllowedEmail } from '@/lib/supabase-auth';
-import { useRouter } from 'next/navigation';
 import Logo from '@/components/Logo';
+import { ModeToggle } from '@/components/mode-toggle';
+import { Button } from '@/components/ui/button';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-import { registerWithEmail, loginWithGoogle } from '@/store/slices/userSlice';
-import {
-  selectUserError,
-  selectUserLoading,
-} from '@/store/selectors/userSelectors';
+import { validateAllowedEmail } from '@/lib/supabase-auth';
+import { selectUserLoading } from '@/store/selectors/userSelectors';
+import { loginWithGoogle, registerWithEmail } from '@/store/slices/userSlice';
+import { Eye, EyeOff, Lock, Mail, User } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function RegisterPage() {
   const [mounted, setMounted] = useState(false);
@@ -22,7 +19,6 @@ export default function RegisterPage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const loading = useAppSelector(selectUserLoading);
-  const reduxError = useAppSelector(selectUserError);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -92,8 +88,10 @@ export default function RegisterPage() {
       } else {
         setError(result.payload as string);
       }
-    } catch (error) {
-      setError('Đã xảy ra lỗi khi đăng ký');
+    } catch (error: unknown) {
+      if (error) {
+        setError('Đã xảy ra lỗi khi đăng ký');
+      }
     }
   };
 
@@ -107,8 +105,10 @@ export default function RegisterPage() {
         setError(result.payload as string);
       }
       // Với Supabase, Google OAuth sẽ redirect đến callback route
-    } catch (error) {
-      setError('Đã xảy ra lỗi khi đăng ký với Google');
+    } catch (error: unknown) {
+      if (error) {
+        setError('Đã xảy ra lỗi khi đăng ký với Google');
+      }
     }
   };
 
