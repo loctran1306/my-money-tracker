@@ -215,10 +215,19 @@ const transactionSlice = createSlice({
       })
 
       // Delete transaction
+      .addCase(removeTransaction.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(removeTransaction.fulfilled, (state, action) => {
         state.transactions = state.transactions.filter(
           (t) => t.id !== action.payload
         );
+        state.loading = false;
+      })
+      .addCase(removeTransaction.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       })
 
       // Fetch stats

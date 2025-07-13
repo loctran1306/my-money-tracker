@@ -15,6 +15,7 @@ import {
 import { format } from 'date-fns';
 import { Edit, Trash2, TrendingDown, TrendingUp } from 'lucide-react';
 import { useEffect } from 'react';
+import { toast } from 'sonner';
 import { Badge } from './ui/badge';
 
 const TransactionList = () => {
@@ -24,8 +25,21 @@ const TransactionList = () => {
     (state) => state.transactions
   );
   const handleDelete = async (id: string) => {
-    if (window.confirm('Bạn có chắc chắn muốn xóa giao dịch này?')) {
-      await dispatch(removeTransaction(id));
+    const result = await dispatch(removeTransaction(id));
+    if (result.payload) {
+      toast.success('Xóa giao dịch thành công', {
+        position: 'top-right',
+        style: {
+          color: 'green',
+        },
+      });
+    } else {
+      toast.error('Xóa giao dịch thất bại', {
+        position: 'top-right',
+        style: {
+          color: 'red',
+        },
+      });
     }
   };
 

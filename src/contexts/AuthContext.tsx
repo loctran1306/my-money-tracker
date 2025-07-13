@@ -1,22 +1,22 @@
 'use client';
 
+import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import {
   onAuthStateChange,
   validateUserFromLocalStorage,
 } from '@/lib/supabase-auth';
+import { selectUser, selectUserLoading } from '@/store/selectors/userSelectors';
+import { clearTransactions } from '@/store/slices/transactionSlice';
+import { logout as logoutThunk, setUser } from '@/store/slices/userSlice';
 import { User } from '@supabase/supabase-js';
 import React, {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
-  useCallback,
   useRef,
 } from 'react';
-import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-import { clearTransactions } from '@/store/slices/transactionSlice';
-import { setUser, logout as logoutThunk } from '@/store/slices/userSlice';
-import { selectUser, selectUserLoading } from '@/store/selectors/userSelectors';
 
 interface AuthContextType {
   user: User | null;
@@ -59,8 +59,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 
   useEffect(() => {
-    console.log('🔄 AuthProvider: Initializing auth');
-
     // Set timeout fallback để đảm bảo loading state được clear
     timeoutRef.current = setTimeout(() => {
       console.log(
@@ -78,7 +76,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
         if (!needsRefresh && cachedUser) {
           // Dùng cached user, không cần API call
-          console.log('✅ Using cached user, no API needed');
           lastUserRef.current = cachedUser;
           dispatch(setUser(cachedUser));
 
@@ -91,7 +88,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         }
 
         // Bước 2: Setup onAuthStateChange chỉ khi cần refresh
-        console.log('🔄 Setting up auth state listener (refresh needed)');
         const {
           data: { subscription },
         } = onAuthStateChange((newUser) => {
@@ -99,7 +95,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           const newUserId = newUser?.id;
 
           if (currentUserId !== newUserId) {
-            console.log('🔐 Auth state changed:', newUser?.email || 'No user');
             lastUserRef.current = newUser;
 
             // Clear timeout
@@ -117,14 +112,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
               dispatch(setUser(newUser));
               debounceRef.current = null;
             }, 100);
-          } else {
-            console.log('🔄 Auth state unchanged - skipping dispatch');
           }
         });
 
         // Cleanup function
         return () => {
-          console.log('🧹 Cleaning up auth subscription');
           subscription.unsubscribe();
           if (debounceRef.current) {
             clearTimeout(debounceRef.current);
@@ -145,7 +137,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
     // Cleanup function
     return () => {
-      console.log('🧹 AuthProvider: Cleaning up');
       if (cleanup) {
         cleanup();
       }

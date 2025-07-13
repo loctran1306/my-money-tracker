@@ -20,6 +20,7 @@ import { vi } from 'date-fns/locale';
 import { ChevronDown, RotateCcw, Send } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { DateTimePicker } from './DateTimePicker';
+import CustomAlert from './custom-alert';
 
 export interface TransactionData {
   id?: string;
@@ -41,6 +42,7 @@ interface ExpenseFormProps {
 }
 
 const ExpenseForm = ({ onSubmit }: ExpenseFormProps) => {
+  const [showError, setShowError] = useState<string | null>(null);
   const [date24, setDate24] = useState<Date | undefined>(new Date());
   const [formData, setFormData] = useState({
     amount: 0,
@@ -53,6 +55,7 @@ const ExpenseForm = ({ onSubmit }: ExpenseFormProps) => {
   );
   const categories = useAppSelector((state) => state.transactions.categories);
   const user = useAppSelector(selectUser);
+  const loading = useAppSelector((state) => state.transactions.loading);
 
   useEffect(() => {
     if (transactionEdit && transactionEdit.type === 'expense') {
@@ -68,6 +71,7 @@ const ExpenseForm = ({ onSubmit }: ExpenseFormProps) => {
   const resetForm = () => {
     setFormData({ amount: 0, description: '', category: '' });
     setDate24(new Date());
+    setShowError(null);
     dispatch(setTransactionEdit(null));
   };
 
@@ -78,8 +82,12 @@ const ExpenseForm = ({ onSubmit }: ExpenseFormProps) => {
     }
 
     e.preventDefault();
-    if (formData.amount <= 0 || !formData.description || !formData.category) {
-      alert('Vui lòng điền đầy đủ thông tin!');
+    if (formData.amount <= 0) {
+      setShowError('Vui lòng điền số tiền');
+      return;
+    }
+    if (!formData.category) {
+      setShowError('Vui lòng chọn danh mục');
       return;
     }
 
@@ -97,6 +105,7 @@ const ExpenseForm = ({ onSubmit }: ExpenseFormProps) => {
   };
 
   const handleInputChange = (field: string, value: string | number) => {
+    setShowError(null);
     setFormData((prev) => ({
       ...prev,
       [field]: value,
@@ -115,6 +124,9 @@ const ExpenseForm = ({ onSubmit }: ExpenseFormProps) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Alert */}
+      {showError && <CustomAlert title={showError} type="warning" />}
+
       {/* Số tiền */}
       <div>
         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -239,7 +251,7 @@ const ExpenseForm = ({ onSubmit }: ExpenseFormProps) => {
           <RotateCcw className="w-5 h-5 mr-2" />
           Làm mới
         </Button>
-        <Button type="submit" className="flex-1 h-12">
+        <Button type="submit" className="flex-1 h-12" disabled={loading}>
           <Send className="w-5 h-5 mr-2" />
           {transactionEdit?.id ? 'Cập nhật' : 'Thêm'}
         </Button>

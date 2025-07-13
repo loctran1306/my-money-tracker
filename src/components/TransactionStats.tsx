@@ -1,24 +1,24 @@
 'use client';
 
-import { useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+import { formatCurrency } from '@/lib/utils';
 import { selectUser } from '@/store/selectors/userSelectors';
 import { fetchTransactionStats } from '@/store/slices/transactionSlice';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import {
-  RefreshCw,
-  TrendingUp,
-  TrendingDown,
-  Wallet,
   BarChart3,
+  RefreshCw,
+  TrendingDown,
+  TrendingUp,
+  Wallet,
 } from 'lucide-react';
-import { formatCurrency } from '@/lib/utils';
+import { useEffect } from 'react';
 
 const TransactionStats = () => {
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
-  const { stats, loading, error } = useAppSelector(
+  const { stats, loading, error, transactions } = useAppSelector(
     (state) => state.transactions
   );
 
@@ -26,7 +26,7 @@ const TransactionStats = () => {
     if (user?.id) {
       dispatch(fetchTransactionStats(user.id));
     }
-  }, [user?.id, dispatch]);
+  }, [user?.id, dispatch, transactions]);
 
   const handleRefresh = () => {
     if (user?.id) {

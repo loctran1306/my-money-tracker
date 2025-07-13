@@ -1,11 +1,12 @@
-import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
-import './globals.css';
+import Footer from '@/components/Footer';
+import { ProtectedRoute } from '@/components/ProtectedRoute';
+import StoreProvider from '@/components/StoreProvider';
 import { ThemeProvider } from '@/components/ui/theme-provider';
 import { AuthProvider } from '@/contexts/AuthContext';
-import { ProtectedRoute } from '@/components/ProtectedRoute';
-import Footer from '@/components/Footer';
-import StoreProvider from '@/components/StoreProvider';
+import type { Metadata } from 'next';
+import { Geist, Geist_Mono } from 'next/font/google';
+import { Toaster } from 'sonner';
+import './globals.css';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -44,6 +45,7 @@ export default function RootLayout({
             <AuthProvider>
               <ProtectedRoute>
                 <div className="flex-1">{children}</div>
+                <Toaster />
                 <Footer />
               </ProtectedRoute>
             </AuthProvider>

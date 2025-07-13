@@ -2,20 +2,16 @@
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { vi } from 'date-fns/locale';
-import { Info, RotateCcw, Send } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import AnimatedAlert from './animated-alert';
-import { TransactionData } from './CardTransaction';
-import { DateTimePicker } from './DateTimePicker';
-import { Alert, AlertDescription, AlertTitle } from './ui/alert';
-import { TransactionInput } from '@/lib/supabase-db';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+import { TransactionInput } from '@/lib/supabase-db';
 import { selectUser } from '@/store/selectors/userSelectors';
-import {
-  setTransactionEdit,
-  Transaction,
-} from '@/store/slices/transactionSlice';
+import { setTransactionEdit } from '@/store/slices/transactionSlice';
+import { vi } from 'date-fns/locale';
+import { RotateCcw, Send } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { TransactionData } from './CardTransaction';
+import CustomAlert from './custom-alert';
+import { DateTimePicker } from './DateTimePicker';
 
 interface IncomeFormProps {
   onSubmit: (data: TransactionData) => void;
@@ -27,8 +23,9 @@ const IncomeForm = ({ onSubmit }: IncomeFormProps) => {
   const transactionEdit = useAppSelector(
     (state) => state.transactions.transactionEdit
   );
+  const loading = useAppSelector((state) => state.transactions.loading);
   const [date24, setDate24] = useState<Date | undefined>(new Date());
-  const [showAlert, setShowAlert] = useState(false);
+  const [showError, setShowError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     amount: 0,
     description: '',
@@ -37,7 +34,7 @@ const IncomeForm = ({ onSubmit }: IncomeFormProps) => {
   const resetForm = () => {
     setFormData({ amount: 0, description: '' });
     setDate24(new Date());
-    setShowAlert(false);
+    setShowError(null);
     dispatch(setTransactionEdit(null));
   };
 
@@ -58,7 +55,7 @@ const IncomeForm = ({ onSubmit }: IncomeFormProps) => {
 
     e.preventDefault();
     if (formData.amount <= 0) {
-      setShowAlert(true);
+      setShowError('Vui lòng điền số tiền');
       return;
     }
 
@@ -75,7 +72,7 @@ const IncomeForm = ({ onSubmit }: IncomeFormProps) => {
   };
 
   const handleInputChange = (field: string, value: string | number) => {
-    setShowAlert(false);
+    setShowError(null);
     setFormData((prev) => ({
       ...prev,
       [field]: value,
@@ -93,15 +90,7 @@ const IncomeForm = ({ onSubmit }: IncomeFormProps) => {
       key={transactionEdit?.id}
     >
       {/* Alert */}
-      {showAlert && (
-        <Alert className="grid w-full max-w-xl items-start border-yellow-400 bg-yellow-50">
-          <Info className="h-4 w-4 text-yellow-500" />
-          <AlertTitle className="text-yellow-700">Cảnh báo</AlertTitle>
-          <AlertDescription className="text-yellow-600">
-            Vui lòng điền số tiền
-          </AlertDescription>
-        </Alert>
-      )}
+      {showError && <CustomAlert title={showError} type="warning" />}
 
       {/* Số tiền */}
       <div>
@@ -184,7 +173,7 @@ const IncomeForm = ({ onSubmit }: IncomeFormProps) => {
           <RotateCcw className="w-5 h-5 mr-2" />
           Làm mới
         </Button>
-        <Button type="submit" className="flex-1 h-12">
+        <Button type="submit" className="flex-1 h-12" disabled={loading}>
           <Send className="w-5 h-5 mr-2" />
           {transactionEdit?.id ? 'Cập nhật' : 'Thêm'}
         </Button>

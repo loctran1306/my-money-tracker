@@ -1,5 +1,5 @@
-import { supabase } from './supabase';
 import { AuthError, User } from '@supabase/supabase-js';
+import { supabase } from './supabase';
 
 // Sign in with email and password
 export const signIn = async (email: string, password: string) => {
@@ -75,13 +75,11 @@ export const getCurrentUser = async (): Promise<User | null> => {
     } = await supabase.auth.getUser();
 
     if (error) {
-      console.error('Error getting user:', error);
       return null;
     }
 
     return user;
   } catch (error) {
-    console.error('Error getting current user:', error);
     return null;
   }
 };
@@ -107,7 +105,6 @@ export const validateUserFromLocalStorage = async (): Promise<{
     } = await supabase.auth.getSession();
 
     if (error) {
-      console.log('❌ Error getting session:', error.message);
       return { user: null, needsRefresh: true };
     }
 
@@ -118,15 +115,12 @@ export const validateUserFromLocalStorage = async (): Promise<{
       const fiveMinutes = 5 * 60;
 
       if (expiresAt && expiresAt - now > fiveMinutes) {
-        console.log('✅ User from localStorage is valid, token not expired');
         return { user: session.user, needsRefresh: false };
       } else {
-        console.log('🔄 Token is expired or will expire soon, needs refresh');
         return { user: session.user, needsRefresh: true };
       }
     }
 
-    console.log('❌ User from localStorage is invalid or session mismatch');
     return { user: null, needsRefresh: true };
   } catch (error) {
     console.error('Error validating user from localStorage:', error);

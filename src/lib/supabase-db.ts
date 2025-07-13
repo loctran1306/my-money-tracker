@@ -16,7 +16,7 @@ export const addTransaction = async (transaction: TransactionInput) => {
     const { data, error } = await supabase
       .from('transactions')
       .insert([transaction])
-      .select()
+      .select('*, categories(name)')
       .single();
 
     if (error) {
