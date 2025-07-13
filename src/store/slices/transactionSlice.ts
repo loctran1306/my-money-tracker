@@ -181,6 +181,19 @@ const transactionSlice = createSlice({
         state.error = action.payload as string;
       })
 
+      // Fetch categories
+      .addCase(fetchCategories.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchCategories.fulfilled, (state, action) => {
+        state.loading = false;
+        state.categories = action.payload as unknown as Category[];
+      })
+      .addCase(fetchCategories.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
       // Add transaction
       .addCase(addNewTransaction.pending, (state) => {
         state.loading = true;

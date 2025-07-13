@@ -1,20 +1,19 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { TrendingUp, TrendingDown } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { TrendingDown, TrendingUp } from 'lucide-react';
 import ExpenseForm from './ExpenseForm';
 import IncomeForm from './IncomeForm';
 
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+import { updateTransaction } from '@/lib/supabase-db';
+import { selectUser } from '@/store/selectors/userSelectors';
 import {
   addNewTransaction,
   fetchTransactions,
-  Transaction,
 } from '@/store/slices/transactionSlice';
-import { selectUser } from '@/store/selectors/userSelectors';
 import { useEffect, useState } from 'react';
-import { TransactionInput, updateTransaction } from '@/lib/supabase-db';
 
 export interface TransactionData {
   type: 'income' | 'expense';

@@ -1,8 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,18 +9,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Send, ChevronDown, RotateCcw } from 'lucide-react';
-import { DateTimePicker } from './DateTimePicker';
-import { vi } from 'date-fns/locale';
-import { getCategories, TransactionInput } from '@/lib/supabase-db';
-import { selectUser } from '@/store/selectors/userSelectors';
+import { Input } from '@/components/ui/input';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-import { formatCurrency, toLocalISOString } from '@/lib/utils';
-import {
-  setTransactionEdit,
-  Transaction,
-} from '@/store/slices/transactionSlice';
+import { TransactionInput } from '@/lib/supabase-db';
+import { formatCurrency } from '@/lib/utils';
+import { selectUser } from '@/store/selectors/userSelectors';
+import { setTransactionEdit } from '@/store/slices/transactionSlice';
 import { format } from 'date-fns';
+import { vi } from 'date-fns/locale';
+import { ChevronDown, RotateCcw, Send } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { DateTimePicker } from './DateTimePicker';
 
 export interface TransactionData {
   id?: string;
@@ -44,17 +41,17 @@ interface ExpenseFormProps {
 }
 
 const ExpenseForm = ({ onSubmit }: ExpenseFormProps) => {
-  const dispatch = useAppDispatch();
   const [date24, setDate24] = useState<Date | undefined>(new Date());
-  const [categories, setCategories] = useState<CategoryType[]>([]);
   const [formData, setFormData] = useState({
     amount: 0,
     description: '',
     category: '',
   });
+  const dispatch = useAppDispatch();
   const transactionEdit = useAppSelector(
     (state) => state.transactions.transactionEdit
   );
+  const categories = useAppSelector((state) => state.transactions.categories);
   const user = useAppSelector(selectUser);
 
   useEffect(() => {

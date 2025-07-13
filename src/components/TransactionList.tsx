@@ -1,7 +1,9 @@
 'use client';
 
-import { useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+import { formatCurrency } from '@/lib/utils';
 import { selectUser } from '@/store/selectors/userSelectors';
 import {
   fetchCategories,
@@ -10,12 +12,10 @@ import {
   setTransactionEdit,
   Transaction,
 } from '@/store/slices/transactionSlice';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Trash2, TrendingUp, TrendingDown, Edit } from 'lucide-react';
 import { format } from 'date-fns';
+import { Edit, Trash2, TrendingDown, TrendingUp } from 'lucide-react';
+import { useEffect } from 'react';
 import { Badge } from './ui/badge';
-import { formatCurrency } from '@/lib/utils';
 
 const TransactionList = () => {
   const dispatch = useAppDispatch();
@@ -34,7 +34,6 @@ const TransactionList = () => {
   };
 
   useEffect(() => {
-    console.log('fetching categories');
     if (user?.id) {
       dispatch(fetchTransactions(user.id));
       dispatch(fetchCategories());
