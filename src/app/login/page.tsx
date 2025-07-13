@@ -1,19 +1,19 @@
 'use client';
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { ModeToggle } from '@/components/mode-toggle';
-import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
-import { validateAllowedEmail } from '@/lib/supabase-auth';
-import { useRouter } from 'next/navigation';
 import AnimatedAlert from '@/components/animated-alert';
 import Logo from '@/components/Logo';
+import { ModeToggle } from '@/components/mode-toggle';
+import { Button } from '@/components/ui/button';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-import { loginWithEmail, loginWithGoogle } from '@/store/slices/userSlice';
+import { validateAllowedEmail } from '@/lib/supabase-auth';
 import {
   selectUserError,
   selectUserLoading,
 } from '@/store/selectors/userSelectors';
+import { loginWithEmail, loginWithGoogle } from '@/store/slices/userSlice';
+import { Eye, EyeOff, Lock, Mail } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
