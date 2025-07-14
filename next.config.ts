@@ -3,11 +3,10 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   trailingSlash: true,
   images: {
-    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'lh3.googleusercontent.com',
+        hostname: '*.googleusercontent.com',
         port: '',
         pathname: '/**',
       },

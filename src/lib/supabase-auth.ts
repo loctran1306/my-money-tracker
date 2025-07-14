@@ -176,13 +176,12 @@ export const resetPassword = async (email: string) => {
 // Sign in with Google
 export const signInWithGoogle = async () => {
   try {
-    const { error } = await supabase.auth.signInWithOAuth({
+    const { error, data } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
       },
     });
-
     if (error) {
       return { user: null, error: error.message };
     }

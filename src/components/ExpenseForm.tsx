@@ -15,12 +15,14 @@ import { TransactionInput } from '@/lib/supabase-db';
 import { formatCurrency } from '@/lib/utils';
 import { selectUser } from '@/store/selectors/userSelectors';
 import { setTransactionEdit } from '@/store/slices/transactionSlice';
+import { Label } from '@radix-ui/react-dropdown-menu';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import { ChevronDown, RotateCcw, Send } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { DateTimePicker } from './DateTimePicker';
 import CustomAlert from './custom-alert';
+import { Checkbox } from './ui/checkbox';
 
 export interface TransactionData {
   id?: string;
@@ -48,12 +50,14 @@ const ExpenseForm = ({ onSubmit }: ExpenseFormProps) => {
     amount: 0,
     description: '',
     category: '',
+    credit_card: '',
   });
   const dispatch = useAppDispatch();
   const transactionEdit = useAppSelector(
     (state) => state.transactions.transactionEdit
   );
   const categories = useAppSelector((state) => state.transactions.categories);
+  const creditCards = useAppSelector((state) => state.transactions.creditCards);
   const user = useAppSelector(selectUser);
   const loading = useAppSelector((state) => state.transactions.loading);
 
@@ -63,13 +67,14 @@ const ExpenseForm = ({ onSubmit }: ExpenseFormProps) => {
         amount: transactionEdit.amount,
         description: transactionEdit.note,
         category: transactionEdit.category_id || '',
+        credit_card: transactionEdit.credit_card_id || '',
       });
       setDate24(new Date(transactionEdit.date));
     }
   }, [transactionEdit]);
 
   const resetForm = () => {
-    setFormData({ amount: 0, description: '', category: '' });
+    setFormData({ amount: 0, description: '', category: '', credit_card: '' });
     setDate24(new Date());
     setShowError(null);
     dispatch(setTransactionEdit(null));
@@ -97,6 +102,7 @@ const ExpenseForm = ({ onSubmit }: ExpenseFormProps) => {
       note: formData.description,
       category_id: formData.category,
       date: date24 ? date24.toISOString() : new Date().toISOString(),
+      credit_card_id: formData.credit_card || null,
       user_id: user.id,
     };
 
@@ -211,7 +217,31 @@ const ExpenseForm = ({ onSubmit }: ExpenseFormProps) => {
           placeholder="Chọn ngày tháng"
         />
       </div>
-
+      {/* Credit card */}
+      {creditCards.length > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {creditCards.map((card) => (
+            <Label
+              key={card.id}
+              className="hover:bg-accent/50 flex items-start gap-3 rounded-lg border p-3 has-[[aria-checked=true]]:border-blue-600 has-[[aria-checked=true]]:bg-blue-50 dark:has-[[aria-checked=true]]:border-blue-900 dark:has-[[aria-checked=true]]:bg-blue-950"
+            >
+              <Checkbox
+                id={card.id}
+                checked={formData.credit_card === card.id}
+                onCheckedChange={(checked) => {
+                  setFormData((prev) => ({
+                    ...prev,
+                    credit_card: checked ? card.id : '',
+                  }));
+                }}
+              />
+              <p className="text-sm leading-none font-medium">
+                {card.card_name}
+              </p>
+            </Label>
+          ))}
+        </div>
+      )}
       {/* Preview */}
       {formData.amount > 0 && formData.description && formData.category && (
         <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 border">
@@ -232,6 +262,14 @@ const ExpenseForm = ({ onSubmit }: ExpenseFormProps) => {
                   ? format(date24, 'dd/MM/yyyy HH:mm')
                   : format(new Date(), 'dd/MM/yyyy HH:mm')}
               </p>
+              {formData.credit_card && (
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {
+                    creditCards.find((card) => card.id === formData.credit_card)
+                      ?.card_name
+                  }
+                </p>
+              )}
             </div>
             <span className="text-lg font-semibold text-red-600 dark:text-red-400">
               -{formatCurrency(formData.amount)}

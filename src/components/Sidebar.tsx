@@ -17,7 +17,6 @@ import {
   PieChart,
   Settings,
   TrendingUp,
-  User,
 } from 'lucide-react';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
@@ -126,24 +125,12 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
         <Image
           className="rounded-full object-cover w-full h-full"
           alt="Profile Picture"
-          src={user.user_metadata.avatar_url}
+          src={user?.user_metadata?.avatar_url}
           width={size}
           height={size}
-          onError={(e) => {
-            // Fallback to default image if Google image fails
-            const target = e.target as HTMLImageElement;
-            target.src = '/arihanticon.jpg';
-          }}
         />
       );
     }
-
-    // Fallback to default image or user icon
-    return (
-      <div className="w-full h-full bg-blue-500 rounded-full flex items-center justify-center">
-        <User className={`text-white ${size === 48 ? 'w-6 h-6' : 'w-4 h-4'}`} />
-      </div>
-    );
   };
 
   return (

@@ -9,6 +9,7 @@ import { selectUser, selectUserLoading } from '@/store/selectors/userSelectors';
 import {
   clearTransactions,
   fetchCategories,
+  fetchCreditCards,
 } from '@/store/slices/transactionSlice';
 import { logout as logoutThunk, setUser } from '@/store/slices/userSlice';
 import { User } from '@supabase/supabase-js';
@@ -160,6 +161,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       dispatch(fetchCategories());
     }
   }, [user, categories.length, dispatch]);
+
+  useEffect(() => {
+    if (user) {
+      dispatch(fetchCreditCards(user.id));
+    }
+  }, [user, dispatch]);
 
   const logout = useCallback(async () => {
     try {

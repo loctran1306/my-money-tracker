@@ -8,6 +8,7 @@ export interface TransactionInput {
   note: string;
   category_id?: string;
   user_id: string;
+  credit_card_id?: string | null;
 }
 
 // Thêm transaction mới

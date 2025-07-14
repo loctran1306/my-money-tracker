@@ -71,7 +71,6 @@ export default function LoginPage() {
 
     try {
       const result = await dispatch(loginWithGoogle());
-
       if (loginWithGoogle.rejected.match(result)) {
         setError(result.payload as string);
       }
