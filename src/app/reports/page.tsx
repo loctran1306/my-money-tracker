@@ -1,10 +1,8 @@
 'use client';
 
-import DashboardLayout from '@/components/layout/DashboardLayout';
-
 export default function ReportsPage() {
   return (
-    <DashboardLayout>
+    <div>
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
           Báo cáo
@@ -19,6 +17,6 @@ export default function ReportsPage() {
           Trang báo cáo đang được phát triển!
         </p>
       </div>
-    </DashboardLayout>
+    </div>
   );
 }

@@ -1,6 +1,5 @@
 'use client';
 
-import DashboardLayout from '@/components/layout/DashboardLayout';
 import { ModeToggle } from '@/components/shared/mode-toggle';
 import { Button } from '@/components/ui/button';
 import {
@@ -15,7 +14,7 @@ import { Bell, Palette, Shield, User } from 'lucide-react';
 
 export default function SettingsPage() {
   return (
-    <DashboardLayout>
+    <div>
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
           Cài đặt
@@ -194,6 +193,6 @@ export default function SettingsPage() {
           </CardContent>
         </Card>
       </div>
-    </DashboardLayout>
+    </div>
   );
 }
