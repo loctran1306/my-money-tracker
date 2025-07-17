@@ -6,16 +6,14 @@ import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { formatCurrency } from '@/lib/utils';
 import { selectUser } from '@/store/selectors/userSelectors';
 import {
-  fetchTransactions,
   removeTransaction,
   setTransactionEdit,
   Transaction,
 } from '@/store/slices/transactionSlice';
 import { format } from 'date-fns';
 import { Edit, Trash2, TrendingDown, TrendingUp } from 'lucide-react';
-import { useEffect } from 'react';
 import { toast } from 'sonner';
-import { Badge } from './ui/badge';
+import { Badge } from '../ui/badge';
 
 const TransactionList = () => {
   const dispatch = useAppDispatch();
@@ -45,12 +43,6 @@ const TransactionList = () => {
   const handleEdit = (transaction: Transaction) => {
     dispatch(setTransactionEdit(transaction));
   };
-
-  useEffect(() => {
-    if (user?.id) {
-      dispatch(fetchTransactions(user.id));
-    }
-  }, [user?.id, dispatch]);
 
   const formatDate = (dateString: string) => {
     return format(new Date(dateString), 'dd/MM/yyyy HH:mm');

@@ -1,13 +1,29 @@
 'use client';
 
-import CardTransaction from '@/components/CardTransaction';
-import DashboardLayout from '@/components/DashboardLayout';
-import TransactionList from '@/components/TransactionList';
-import TransactionStats from '@/components/TransactionStats';
+import CardTransaction from '@/components/transaction/CardTransaction';
+import TransactionList from '@/components/transaction/TransactionList';
+import TransactionStats from '@/components/transaction/TransactionStats';
+import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+import {
+  fetchTransactions,
+  fetchTransactionStats,
+} from '@/store/slices/transactionSlice';
+import { useEffect } from 'react';
 
 export default function DashboardPage() {
+  const { user } = useAppSelector((state) => state.user);
+
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (user) {
+      dispatch(fetchTransactions(user.id));
+      dispatch(fetchTransactionStats(user.id));
+    }
+  }, [user]);
+
   return (
-    <DashboardLayout>
+    <div>
       {/* Transaction Stats */}
       <TransactionStats />
 
@@ -23,6 +39,6 @@ export default function DashboardPage() {
           <TransactionList />
         </div>
       </div>
-    </DashboardLayout>
+    </div>
   );
 }

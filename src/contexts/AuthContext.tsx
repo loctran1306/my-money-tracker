@@ -6,11 +6,7 @@ import {
   validateUserFromLocalStorage,
 } from '@/lib/supabase-auth';
 import { selectUser, selectUserLoading } from '@/store/selectors/userSelectors';
-import {
-  clearTransactions,
-  fetchCategories,
-  fetchCreditCards,
-} from '@/store/slices/transactionSlice';
+import { clearTransactions } from '@/store/slices/transactionSlice';
 import { logout as logoutThunk, setUser } from '@/store/slices/userSlice';
 import { User } from '@supabase/supabase-js';
 import React, {
@@ -50,7 +46,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
   const loading = useAppSelector(selectUserLoading);
-  const categories = useAppSelector((state) => state.transactions.categories);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastUserRef = useRef<User | null>(null);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
@@ -154,19 +149,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       }
     };
   }, [dispatch]);
-
-  // Load categories once when user is authenticated
-  useEffect(() => {
-    if (user && categories.length === 0) {
-      dispatch(fetchCategories());
-    }
-  }, [user, categories.length, dispatch]);
-
-  useEffect(() => {
-    if (user) {
-      dispatch(fetchCreditCards(user.id));
-    }
-  }, [user, dispatch]);
 
   const logout = useCallback(async () => {
     try {

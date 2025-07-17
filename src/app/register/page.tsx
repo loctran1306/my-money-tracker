@@ -1,7 +1,7 @@
 'use client';
 
-import Logo from '@/components/Logo';
-import { ModeToggle } from '@/components/mode-toggle';
+import Logo from '@/components/shared/Logo';
+import { ModeToggle } from '@/components/shared/mode-toggle';
 import { Button } from '@/components/ui/button';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { validateAllowedEmail } from '@/lib/supabase-auth';

@@ -9,12 +9,9 @@ import IncomeForm from './IncomeForm';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { updateTransaction } from '@/lib/supabase-db';
 import { selectUser } from '@/store/selectors/userSelectors';
-import {
-  addNewTransaction,
-  fetchTransactions,
-} from '@/store/slices/transactionSlice';
+import { addNewTransaction } from '@/store/slices/transactionSlice';
 import { useEffect, useState } from 'react';
-import CustomAlert from './custom-alert';
+import CustomAlert from '../shared/custom-alert';
 
 export interface TransactionData {
   type: 'income' | 'expense';
@@ -38,13 +35,6 @@ const CardTransaction = () => {
     (state) => state.transactions.transactionEdit
   );
   const loading = useAppSelector((state) => state.transactions.loading);
-
-  // Fetch transactions when user changes
-  useEffect(() => {
-    if (user?.id) {
-      dispatch(fetchTransactions(user.id));
-    }
-  }, [user?.id, dispatch]);
 
   const handleSubmit = async (transactionData: TransactionData) => {
     if (transactionEdit) {

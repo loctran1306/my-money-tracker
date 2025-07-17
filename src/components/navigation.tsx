@@ -1,16 +1,16 @@
 'use client';
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import {
-  Home,
   BarChart3,
   CreditCard,
+  Home,
+  LogOut,
   Settings,
   User,
-  LogOut,
 } from 'lucide-react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const navigation = [
   { name: 'Trang chủ', href: '/', icon: Home },

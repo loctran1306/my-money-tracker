@@ -1,5 +1,5 @@
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Check, Info, X } from 'lucide-react';
-import { Alert, AlertDescription, AlertTitle } from './ui/alert';
 
 interface CustomAlertProps {
   title?: string;

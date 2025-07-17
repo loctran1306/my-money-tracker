@@ -1,11 +1,11 @@
 'use client';
 
-import { checkAndRefreshSession } from '@/lib/supabase-auth';
 import { Button } from '@/components/ui/button';
-import { useState } from 'react';
 import { useAppSelector } from '@/hooks/redux';
+import { checkAndRefreshSession } from '@/lib/supabase-auth';
 import { selectUser, selectUserLoading } from '@/store/selectors/userSelectors';
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import { useState } from 'react';
 
 export default function Footer() {
   const user = useAppSelector(selectUser);

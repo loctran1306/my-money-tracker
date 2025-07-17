@@ -14,7 +14,6 @@ export default function Home() {
     if (!loading) {
       if (user) {
         // Nếu đã đăng nhập -> redirect đến dashboard
-
         router.replace('/dashboard');
       } else {
         // Nếu chưa đăng nhập -> redirect đến login

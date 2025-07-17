@@ -1,5 +1,6 @@
-import Footer from '@/components/Footer';
+import CommonLayout from '@/components/layout/CommonLayout';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
+import Footer from '@/components/shared/Footer';
 import StoreProvider from '@/components/StoreProvider';
 import { ThemeProvider } from '@/components/ui/theme-provider';
 import { AuthProvider } from '@/contexts/AuthContext';
@@ -44,7 +45,7 @@ export default function RootLayout({
           >
             <AuthProvider>
               <ProtectedRoute>
-                <div className="flex-1">{children}</div>
+                <CommonLayout>{children}</CommonLayout>
                 <Toaster />
                 <Footer />
               </ProtectedRoute>

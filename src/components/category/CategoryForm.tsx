@@ -7,7 +7,7 @@ import { selectUser } from '@/store/selectors/userSelectors';
 import { Category } from '@/store/slices/transactionSlice';
 import { RotateCcw, Send } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import CustomAlert from './custom-alert';
+import CustomAlert from '../shared/custom-alert';
 
 export interface TransactionData {
   id?: string;

@@ -9,9 +9,9 @@ import { setTransactionEdit } from '@/store/slices/transactionSlice';
 import { vi } from 'date-fns/locale';
 import { RotateCcw, Send } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import CustomAlert from '../shared/custom-alert';
+import { DateTimePicker } from '../shared/DateTimePicker';
 import { TransactionData } from './CardTransaction';
-import CustomAlert from './custom-alert';
-import { DateTimePicker } from './DateTimePicker';
 
 interface IncomeFormProps {
   onSubmit: (data: TransactionData) => void;

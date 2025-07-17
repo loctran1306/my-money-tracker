@@ -1,8 +1,8 @@
 'use client';
 
-import AnimatedAlert from '@/components/animated-alert';
-import Logo from '@/components/Logo';
-import { ModeToggle } from '@/components/mode-toggle';
+import AnimatedAlert from '@/components/shared/animated-alert';
+import Logo from '@/components/shared/Logo';
+import { ModeToggle } from '@/components/shared/mode-toggle';
 import { Button } from '@/components/ui/button';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { validateAllowedEmail } from '@/lib/supabase-auth';

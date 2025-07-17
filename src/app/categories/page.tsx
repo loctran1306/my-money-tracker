@@ -1,7 +1,6 @@
 'use client';
-import CategoryForm from '@/components/CategoryForm';
-import CustomAlert from '@/components/custom-alert';
-import DashboardLayout from '@/components/DashboardLayout';
+import CategoryForm from '@/components/category/CategoryForm';
+import CustomAlert from '@/components/shared/custom-alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -79,69 +78,67 @@ const CategoriesPage = () => {
   };
 
   return (
-    <DashboardLayout>
-      <div className="grid grid-cols-1 md:grid-cols-2  gap-4">
-        <Card className="w-full">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <span>Danh sách danh mục</span>
-              <Badge variant="secondary">{categories.length}</Badge>
-            </CardTitle>
-            {alert && (
-              <CustomAlert
-                title={alert}
-                type={alertType as 'success' | 'error' | 'warning'}
-              />
-            )}
-          </CardHeader>
-          <CardContent>
-            {categories.length === 0 ? (
-              <div className="text-center text-gray-500 py-8">
-                Chưa có danh mục nào
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {categories.map((category: Category) => (
-                  <div
-                    key={category.id}
-                    className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className={`p-2 rounded-full`}>
-                        <List size={16} />
-                      </div>
-                      <div>
-                        <div className="font-medium">{category.name}</div>
-                      </div>
+    <div className="grid grid-cols-1 md:grid-cols-2  gap-4">
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <span>Danh sách danh mục</span>
+            <Badge variant="secondary">{categories.length}</Badge>
+          </CardTitle>
+          {alert && (
+            <CustomAlert
+              title={alert}
+              type={alertType as 'success' | 'error' | 'warning'}
+            />
+          )}
+        </CardHeader>
+        <CardContent>
+          {categories.length === 0 ? (
+            <div className="text-center text-gray-500 py-8">
+              Chưa có danh mục nào
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {categories.map((category: Category) => (
+                <div
+                  key={category.id}
+                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className={`p-2 rounded-full`}>
+                      <List size={16} />
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleEdit(category)}
-                        className="text-blue-500 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/20"
-                      >
-                        <Pencil size={16} />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleDelete(category.id)}
-                        className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
-                      >
-                        <Trash2 size={16} />
-                      </Button>
+                    <div>
+                      <div className="font-medium">{category.name}</div>
                     </div>
                   </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-        {/* Add Category Form */}
-        <CategoryForm onSubmit={handleSubmit} categoryEdit={categoryEdit} />
-      </div>
-    </DashboardLayout>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleEdit(category)}
+                      className="text-blue-500 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                    >
+                      <Pencil size={16} />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleDelete(category.id)}
+                      className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
+                    >
+                      <Trash2 size={16} />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+      {/* Add Category Form */}
+      <CategoryForm onSubmit={handleSubmit} categoryEdit={categoryEdit} />
+    </div>
   );
 };
 

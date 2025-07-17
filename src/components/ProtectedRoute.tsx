@@ -1,9 +1,9 @@
 'use client';
 
-import { useRouter, usePathname } from 'next/navigation';
-import { useEffect, useMemo } from 'react';
 import { useAppSelector } from '@/hooks/redux';
 import { selectUser, selectUserLoading } from '@/store/selectors/userSelectors';
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect, useMemo } from 'react';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;

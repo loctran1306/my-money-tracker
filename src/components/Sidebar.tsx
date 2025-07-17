@@ -1,6 +1,6 @@
 'use client';
 
-import Logo from '@/components/Logo';
+import Logo from '@/components/shared/Logo';
 import { Button } from '@/components/ui/button';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { selectUser } from '@/store/selectors/userSelectors';

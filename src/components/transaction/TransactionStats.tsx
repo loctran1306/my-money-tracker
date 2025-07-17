@@ -13,7 +13,6 @@ import {
   TrendingUp,
   Wallet,
 } from 'lucide-react';
-import { useEffect } from 'react';
 
 const TransactionStats = () => {
   const dispatch = useAppDispatch();
@@ -21,12 +20,6 @@ const TransactionStats = () => {
   const { stats, loading, error, transactions } = useAppSelector(
     (state) => state.transactions
   );
-
-  useEffect(() => {
-    if (user?.id) {
-      dispatch(fetchTransactionStats(user.id));
-    }
-  }, [user?.id, dispatch, transactions]);
 
   const handleRefresh = () => {
     if (user?.id) {
