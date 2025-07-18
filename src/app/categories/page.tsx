@@ -78,8 +78,8 @@ const CategoriesPage = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2  gap-4">
-      <Card className="w-full">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 ">
+      <Card className="bg-white dark:bg-gray-800 ">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <span>Danh sách danh mục</span>
@@ -98,36 +98,38 @@ const CategoriesPage = () => {
               Chưa có danh mục nào
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 gap-2 scroll-smooth max-h-80 overflow-y-auto">
               {categories.map((category: Category) => (
                 <div
                   key={category.id}
-                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                  className="flex items-center justify-between py-1 px-2 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors "
                 >
-                  <div className="flex items-center gap-4">
-                    <div className={`p-2 rounded-full`}>
+                  <div className="p-2 flex items-center gap-4">
+                    <div>
                       <List size={16} />
                     </div>
                     <div>
-                      <div className="font-medium">{category.name}</div>
+                      <div className="font-semibold text-sm">
+                        {category.name}
+                      </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-end ">
                     <Button
                       variant="ghost"
-                      size="sm"
+                      size="icon"
                       onClick={() => handleEdit(category)}
-                      className="text-blue-500 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                      className=" text-blue-500 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/20"
                     >
-                      <Pencil size={16} />
+                      <Pencil size={10} />
                     </Button>
                     <Button
                       variant="ghost"
-                      size="sm"
+                      size="icon"
                       onClick={() => handleDelete(category.id)}
                       className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
                     >
-                      <Trash2 size={16} />
+                      <Trash2 size={10} />
                     </Button>
                   </div>
                 </div>

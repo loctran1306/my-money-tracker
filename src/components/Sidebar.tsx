@@ -21,6 +21,7 @@ import {
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -86,7 +87,12 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
       router.push('/login');
     } catch (error: unknown) {
       if (error) {
-        console.error('Logout error:', error);
+        toast.error('Đăng xuất thất bại', {
+          position: 'top-right',
+          style: {
+            color: 'red',
+          },
+        });
       }
     } finally {
       setTimeout(() => {
@@ -109,7 +115,12 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
       }
     } catch (error: unknown) {
       if (error) {
-        console.error('Navigation error:', error);
+        toast.error('Điều hướng thất bại', {
+          position: 'top-right',
+          style: {
+            color: 'red',
+          },
+        });
       }
     } finally {
       // Reset loading sau một khoảng thời gian ngắn để đảm bảo UI đã cập nhật

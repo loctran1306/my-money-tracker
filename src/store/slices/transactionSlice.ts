@@ -1,3 +1,4 @@
+import { STATS_MENU } from '@/constants';
 import {
   addTransaction,
   deleteTransaction,
@@ -35,10 +36,10 @@ export interface Category {
 }
 
 export interface TransactionStats {
-  totalIncome: number;
-  totalExpense: number;
-  balance: number;
-  transactionCount: number;
+  [STATS_MENU.INCOME]: number;
+  [STATS_MENU.EXPENSE]: number;
+  [STATS_MENU.BALANCE]: number;
+  [STATS_MENU.TRANSACTION]: number;
 }
 
 export interface CreditCard {

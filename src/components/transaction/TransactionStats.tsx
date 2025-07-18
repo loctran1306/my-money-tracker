@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { STATS_MENU, STATS_MENU_TITLE } from '@/constants';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { formatCurrency } from '@/lib/utils';
 import { selectUser } from '@/store/selectors/userSelectors';
@@ -14,10 +15,37 @@ import {
   Wallet,
 } from 'lucide-react';
 
+const statsMenu = [
+  {
+    id: STATS_MENU.INCOME,
+    title: STATS_MENU_TITLE[STATS_MENU.INCOME],
+    icon: TrendingUp,
+    color: 'text-green-600',
+  },
+  {
+    id: STATS_MENU.BALANCE,
+    title: STATS_MENU_TITLE[STATS_MENU.BALANCE],
+    icon: Wallet,
+    color: 'text-blue-600',
+  },
+  {
+    id: STATS_MENU.EXPENSE,
+    title: STATS_MENU_TITLE[STATS_MENU.EXPENSE],
+    icon: TrendingDown,
+    color: 'text-red-600',
+  },
+  {
+    id: STATS_MENU.TRANSACTION,
+    title: STATS_MENU_TITLE[STATS_MENU.TRANSACTION],
+    icon: BarChart3,
+    color: 'text-purple-600',
+  },
+];
+
 const TransactionStats = () => {
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
-  const { stats, loading, error, transactions } = useAppSelector(
+  const { stats, loading, error } = useAppSelector(
     (state) => state.transactions
   );
 
@@ -29,7 +57,7 @@ const TransactionStats = () => {
 
   if (loading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         {[1, 2, 3, 4].map((i) => (
           <Card key={i} className="animate-pulse">
             <CardContent className="p-6">
@@ -63,62 +91,22 @@ const TransactionStats = () => {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-      {/* Total Income */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Thu nhập</CardTitle>
-          <TrendingUp className="h-4 w-4 text-green-600" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold text-green-600">
-            {formatCurrency(stats?.totalIncome || 0)}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Total Expense */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Chi tiêu</CardTitle>
-          <TrendingDown className="h-4 w-4 text-red-600" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold text-red-600">
-            {formatCurrency(stats?.totalExpense || 0)}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Balance */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Số dư</CardTitle>
-          <Wallet className="h-4 w-4 text-blue-600" />
-        </CardHeader>
-        <CardContent>
-          <div
-            className={`text-2xl font-bold ${
-              (stats?.balance || 0) >= 0 ? 'text-green-600' : 'text-red-600'
-            }`}
-          >
-            {formatCurrency(stats?.balance || 0)}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Transaction Count */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Giao dịch</CardTitle>
-          <BarChart3 className="h-4 w-4 text-purple-600" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold text-purple-600">
-            {stats?.transactionCount || 0}
-          </div>
-        </CardContent>
-      </Card>
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {statsMenu.map((stat) => (
+        <Card key={stat.id}>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 ">
+            <CardTitle className="text-sm font-bold">{stat.title}</CardTitle>
+            <stat.icon className={`h-4 w-4 ${stat.color}`} />
+          </CardHeader>
+          <CardContent>
+            <div className={`text-xl font-bold ${stat.color}`}>
+              {stat.id !== STATS_MENU.TRANSACTION
+                ? formatCurrency(stats?.[stat.id] || 0)
+                : stats?.[stat.id] || 0}
+            </div>
+          </CardContent>
+        </Card>
+      ))}
     </div>
   );
 };

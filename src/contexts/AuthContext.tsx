@@ -17,6 +17,7 @@ import React, {
   useMemo,
   useRef,
 } from 'react';
+import { toast } from 'sonner';
 
 interface AuthContextType {
   user: User | null;
@@ -122,7 +123,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         };
       } catch (error: unknown) {
         if (error) {
-          console.error('Error initializing auth:', error);
+          toast.error('Lỗi khi khởi tạo auth', {
+            position: 'top-right',
+            style: {
+              color: 'red',
+            },
+          });
         }
         dispatch(setUser(null));
       }
@@ -157,7 +163,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       lastUserRef.current = null;
     } catch (error: unknown) {
       if (error) {
-        console.error('Logout error:', error);
+        toast.error('Đăng xuất thất bại', {
+          position: 'top-right',
+          style: {
+            color: 'red',
+          },
+        });
       }
     }
   }, [dispatch]);

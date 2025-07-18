@@ -2,7 +2,6 @@
 
 import AnimatedAlert from '@/components/shared/animated-alert';
 import Logo from '@/components/shared/Logo';
-import { ModeToggle } from '@/components/shared/mode-toggle';
 import { Button } from '@/components/ui/button';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { validateAllowedEmail } from '@/lib/supabase-auth';
@@ -99,7 +98,7 @@ export default function LoginPage() {
             <div className="space-y-2">
               <label
                 htmlFor="email"
-                className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                className="text-sm font-semibold text-gray-700 dark:text-gray-300"
               >
                 Email
               </label>
@@ -111,7 +110,7 @@ export default function LoginPage() {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                  className="text-sm w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                   placeholder="Nhập email của bạn"
                   required
                 />
@@ -122,7 +121,7 @@ export default function LoginPage() {
             <div className="space-y-2">
               <label
                 htmlFor="password"
-                className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                className="text-sm font-semibold text-gray-700 dark:text-gray-300"
               >
                 Mật khẩu
               </label>
@@ -134,7 +133,7 @@ export default function LoginPage() {
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  className="w-full pl-10 pr-12 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                  className="text-sm w-full pl-10 pr-12 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                   placeholder="Nhập mật khẩu"
                   required
                 />
@@ -231,11 +230,6 @@ export default function LoginPage() {
               {loading ? 'Đang đăng nhập...' : 'Đăng nhập với Google'}
             </Button>
           </div>
-        </div>
-
-        {/* Theme Toggle */}
-        <div className="mt-6 flex justify-center">
-          <ModeToggle />
         </div>
       </div>
     </div>

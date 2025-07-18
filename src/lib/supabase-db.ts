@@ -1,3 +1,4 @@
+import { STATS_MENU } from '@/constants';
 import { supabase } from './supabase';
 
 // Interface cho transaction input
@@ -133,10 +134,10 @@ export const getTransactionStats = async (userId: string) => {
       .reduce((sum, t) => sum + t.amount, 0);
 
     const stats = {
-      totalIncome: income,
-      totalExpense: expense,
-      balance: income - expense,
-      transactionCount: data.length,
+      [STATS_MENU.INCOME]: income,
+      [STATS_MENU.EXPENSE]: expense,
+      [STATS_MENU.BALANCE]: income - expense,
+      [STATS_MENU.TRANSACTION]: data.length,
     };
 
     return { stats, error: null };

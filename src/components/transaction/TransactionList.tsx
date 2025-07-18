@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { formatCurrency } from '@/lib/utils';
-import { selectUser } from '@/store/selectors/userSelectors';
 import {
   removeTransaction,
   setTransactionEdit,
@@ -17,7 +16,6 @@ import { Badge } from '../ui/badge';
 
 const TransactionList = () => {
   const dispatch = useAppDispatch();
-  const user = useAppSelector(selectUser);
   const { transactions, loading, error } = useAppSelector(
     (state) => state.transactions
   );
@@ -95,7 +93,7 @@ const TransactionList = () => {
             Chưa có giao dịch nào
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-4 max-h-120 overflow-y-auto scroll-smooth">
             {transactions.map((transaction: Transaction) => (
               <div
                 key={transaction.id}
@@ -116,35 +114,33 @@ const TransactionList = () => {
                     )}
                   </div>
                   <div>
-                    <div className="font-medium">{transaction.note}</div>
+                    <div
+                      className={`font-semibold ${
+                        transaction.type === 'income'
+                          ? 'text-green-600'
+                          : 'text-red-600'
+                      }`}
+                    >
+                      {transaction.type === 'income' ? '+ ' : '- '}
+                      {formatCurrency(transaction.amount)}
+                    </div>
+
                     <div className="text-sm text-gray-500">
-                      {formatDate(transaction.date)}
-                      {transaction.category_id && (
-                        <span className="ml-2">
-                          • {transaction.categories?.name}
-                        </span>
-                      )}
+                      {transaction.categories?.name} • {transaction.note}
+                      <div className="text-sm">
+                        {formatDate(transaction.date)}
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div
-                    className={`font-semibold ${
-                      transaction.type === 'income'
-                        ? 'text-green-600'
-                        : 'text-red-600'
-                    }`}
-                  >
-                    {transaction.type === 'income' ? '+' : '-'}
-                    {formatCurrency(transaction.amount)}
-                  </div>
+                <div className="flex items-center gap-1">
                   <Button
                     className="text-gray-500 hover:text-gray-700 hover:bg-gray-50 dark:hover:bg-gray-900/20"
                     variant="ghost"
                     size="sm"
                     onClick={() => handleEdit(transaction)}
                   >
-                    <Edit size={16} />
+                    <Edit size={10} />
                   </Button>
                   <Button
                     variant="ghost"
@@ -152,7 +148,7 @@ const TransactionList = () => {
                     onClick={() => handleDelete(transaction.id)}
                     className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
                   >
-                    <Trash2 size={16} />
+                    <Trash2 size={10} />
                   </Button>
                 </div>
               </div>

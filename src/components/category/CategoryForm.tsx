@@ -80,7 +80,7 @@ const CategoryForm = ({ onSubmit, categoryEdit }: CategoryFormProps) => {
           placeholder="Nhập tên danh mục"
           value={formData.name}
           onChange={(e) => handleInputChange('name', e.target.value)}
-          className="h-12"
+          className="h-12 text-sm"
         />
       </div>
 

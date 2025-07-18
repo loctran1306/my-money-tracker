@@ -20,10 +20,10 @@ export default function DashboardPage() {
       dispatch(fetchTransactions(user.id));
       dispatch(fetchTransactionStats(user.id));
     }
-  }, [user]);
+  }, [user, dispatch]);
 
   return (
-    <div>
+    <div className="flex flex-col gap-4">
       {/* Transaction Stats */}
       <TransactionStats />
 

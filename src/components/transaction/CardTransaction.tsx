@@ -8,7 +8,6 @@ import IncomeForm from './IncomeForm';
 
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { updateTransaction } from '@/lib/supabase-db';
-import { selectUser } from '@/store/selectors/userSelectors';
 import { addNewTransaction } from '@/store/slices/transactionSlice';
 import { useEffect, useState } from 'react';
 import CustomAlert from '../shared/custom-alert';
@@ -30,7 +29,6 @@ const CardTransaction = () => {
   );
   const [isFirstLoad, setIsFirstLoad] = useState(true);
   const dispatch = useAppDispatch();
-  const user = useAppSelector(selectUser);
   const transactionEdit = useAppSelector(
     (state) => state.transactions.transactionEdit
   );

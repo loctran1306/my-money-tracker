@@ -145,7 +145,7 @@ const ExpenseForm = ({ onSubmit }: ExpenseFormProps) => {
           onChange={(e) =>
             handleInputChange('amount', parseFloat(e.target.value) || 0)
           }
-          className="text-xl font-semibold h-12"
+          className="text-sm h-12"
         />
       </div>
 
@@ -159,7 +159,7 @@ const ExpenseForm = ({ onSubmit }: ExpenseFormProps) => {
           placeholder="Nhập mô tả giao dịch"
           value={formData.description}
           onChange={(e) => handleInputChange('description', e.target.value)}
-          className="h-12"
+          className="h-12 text-sm"
         />
       </div>
 
@@ -172,7 +172,7 @@ const ExpenseForm = ({ onSubmit }: ExpenseFormProps) => {
           <DropdownMenuTrigger asChild>
             <Button
               variant="outline"
-              className="w-full h-12 justify-between text-left font-normal"
+              className="w-full h-12 justify-between text-left text-sm"
             >
               <span
                 className={
@@ -215,6 +215,7 @@ const ExpenseForm = ({ onSubmit }: ExpenseFormProps) => {
           onChange={handleDateChange}
           locale={vi}
           placeholder="Chọn ngày tháng"
+          className="text-sm"
         />
       </div>
       {/* Credit card */}
