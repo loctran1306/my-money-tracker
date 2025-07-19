@@ -1,16 +1,18 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TrendingDown, TrendingUp } from 'lucide-react';
 import ExpenseForm from './ExpenseForm';
 import IncomeForm from './IncomeForm';
 
+import { FilterContext } from '@/contexts/FilterContext';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { updateTransaction } from '@/lib/supabase-db';
+import { showToast } from '@/lib/toast';
 import { addNewTransaction } from '@/store/slices/transactionSlice';
-import { useEffect, useState } from 'react';
-import CustomAlert from '../shared/custom-alert';
+import { useContext, useEffect, useState } from 'react';
+import LoadingChildScreen from '../shared/LoadingChildScreen';
 
 export interface TransactionData {
   type: 'income' | 'expense';
@@ -22,18 +24,14 @@ export interface TransactionData {
 }
 
 const CardTransaction = () => {
+  const { setTimeRefresh } = useContext(FilterContext);
   const [tab, setTab] = useState<'expense' | 'income'>('expense');
-  const [alert, setAlert] = useState<string | null>(null);
-  const [alertType, setAlertType] = useState<'success' | 'error' | 'warning'>(
-    'success'
-  );
-  const [isFirstLoad, setIsFirstLoad] = useState(true);
+
   const dispatch = useAppDispatch();
   const transactionEdit = useAppSelector(
     (state) => state.transactions.transactionEdit
   );
   const loading = useAppSelector((state) => state.transactions.loading);
-
   const handleSubmit = async (transactionData: TransactionData) => {
     if (transactionEdit) {
       const newTransactionData = {
@@ -45,32 +43,26 @@ const CardTransaction = () => {
         newTransactionData
       );
       if (result.error) {
-        setAlert('Lỗi khi cập nhật giao dịch');
-        setAlertType('error');
+        showToast.error('Lỗi khi cập nhật giao dịch');
       } else {
-        setAlert('Giao dịch đã được cập nhật thành công');
-        setAlertType('success');
+        showToast.success('Giao dịch đã được cập nhật thành công');
+        setTimeRefresh(Date.now());
       }
     } else {
       try {
         const result = await dispatch(addNewTransaction(transactionData));
+        setTimeRefresh(Date.now());
         if (addNewTransaction.fulfilled.match(result)) {
-          setAlert('Giao dịch đã được thêm thành công');
-          setAlertType('success');
+          showToast.success('Giao dịch đã được thêm thành công');
         } else {
-          setAlert('Lỗi khi thêm giao dịch');
-          setAlertType('error');
+          showToast.error('Lỗi khi thêm giao dịch');
         }
       } catch (error: unknown) {
         if (error) {
-          setAlert('Lỗi khi thêm giao dịch');
-          setAlertType('error');
+          showToast.error('Lỗi khi thêm giao dịch');
         }
       }
     }
-    setTimeout(() => {
-      setAlert(null);
-    }, 3000);
   };
 
   useEffect(() => {
@@ -79,39 +71,9 @@ const CardTransaction = () => {
     }
   }, [transactionEdit]);
 
-  if (loading && isFirstLoad) {
-    setTimeout(() => {
-      setIsFirstLoad(false);
-    }, 1000);
-    return (
-      <Card className="w-full">
-        <CardHeader>
-          <CardTitle>Thêm giao dịch mới</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="animate-pulse space-y-4">
-            <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded"></div>
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div
-                key={i}
-                className="h-15 bg-gray-200 dark:bg-gray-700 rounded"
-              ></div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle className="text-lg font-semibold flex items-center gap-2">
-          <span>Thêm giao dịch mới</span>
-        </CardTitle>
-        {alert && (
-          <CustomAlert title={alert} type={alertType as 'success' | 'error'} />
-        )}
-      </CardHeader>
+    <Card className="w-full relative">
+      {loading && <LoadingChildScreen />}
       <CardContent>
         <Tabs value={tab} className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-6">

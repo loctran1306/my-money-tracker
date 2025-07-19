@@ -32,13 +32,27 @@ export const addTransaction = async (transaction: TransactionInput) => {
 };
 
 // Lấy tất cả transactions của user hiện tại
-export const getTransactions = async (userId: string) => {
+export const getTransactions = async (
+  userId: string,
+  startDate?: string | Date | null,
+  endDate?: string | Date | null
+) => {
   try {
-    const { data, error } = await supabase
+    let query = supabase
       .from('transactions')
-      .select('*, categories(name)')
-      .eq('user_id', userId)
-      .order('date', { ascending: false });
+      .select('*, categories(name), credit_cards(card_name)')
+      .eq('user_id', userId);
+
+    // Filter theo date range nếu có
+    if (startDate && endDate) {
+      const start =
+        typeof startDate === 'string' ? startDate : startDate.toISOString();
+      const end = typeof endDate === 'string' ? endDate : endDate.toISOString();
+
+      query = query.gte('date', start).lte('date', end);
+    }
+
+    const { data, error } = await query.order('date', { ascending: false });
 
     if (error) {
       return { data: [], error: error.message };
@@ -113,12 +127,26 @@ export const deleteTransaction = async (id: string) => {
 };
 
 // Lấy thống kê transactions
-export const getTransactionStats = async (userId: string) => {
+export const getTransactionStats = async (
+  userId: string,
+  startDate?: string | Date | null,
+  endDate?: string | Date | null
+) => {
   try {
-    const { data, error } = await supabase
+    let queryStats = supabase
       .from('transactions')
       .select('type, amount')
       .eq('user_id', userId);
+
+    if (startDate && endDate) {
+      const start =
+        typeof startDate === 'string' ? startDate : startDate.toISOString();
+      const end = typeof endDate === 'string' ? endDate : endDate.toISOString();
+
+      queryStats = queryStats.gte('date', start).lte('date', end);
+    }
+
+    const { data, error } = await queryStats;
 
     if (error) {
       return { stats: null, error: error.message };
@@ -137,7 +165,6 @@ export const getTransactionStats = async (userId: string) => {
       [STATS_MENU.INCOME]: income,
       [STATS_MENU.EXPENSE]: expense,
       [STATS_MENU.BALANCE]: income - expense,
-      [STATS_MENU.TRANSACTION]: data.length,
     };
 
     return { stats, error: null };

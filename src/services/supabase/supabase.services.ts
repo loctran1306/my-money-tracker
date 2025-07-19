@@ -54,14 +54,4 @@ export const supabaseServices = {
       return { data: null, error: (error as Error).message };
     }
   },
-  async getCreditCards(userId: string) {
-    const { data, error } = await supabase
-      .from('credit_cards')
-      .select('id, card_name')
-      .eq('user_id', userId);
-    if (error) {
-      return { data: null, error: error.message };
-    }
-    return { data, error: null };
-  },
 };

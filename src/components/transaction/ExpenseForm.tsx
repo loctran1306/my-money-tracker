@@ -12,12 +12,9 @@ import {
 import { Input } from '@/components/ui/input';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { TransactionInput } from '@/lib/supabase-db';
-import { formatCurrency } from '@/lib/utils';
 import { selectUser } from '@/store/selectors/userSelectors';
 import { setTransactionEdit } from '@/store/slices/transactionSlice';
 import { Label } from '@radix-ui/react-dropdown-menu';
-import { format } from 'date-fns';
-import { vi } from 'date-fns/locale';
 import { ChevronDown, RotateCcw, Send } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import CustomAlert from '../shared/custom-alert';
@@ -57,7 +54,8 @@ const ExpenseForm = ({ onSubmit }: ExpenseFormProps) => {
     (state) => state.transactions.transactionEdit
   );
   const categories = useAppSelector((state) => state.transactions.categories);
-  const creditCards = useAppSelector((state) => state.transactions.creditCards);
+  const creditCards = useAppSelector((state) => state.creditCard.creditCards);
+
   const user = useAppSelector(selectUser);
   const loading = useAppSelector((state) => state.transactions.loading);
 
@@ -134,26 +132,58 @@ const ExpenseForm = ({ onSubmit }: ExpenseFormProps) => {
       {showError && <CustomAlert title={showError} type="warning" />}
 
       {/* Số tiền */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Số tiền (₫)
-        </label>
-        <Input
-          type="number"
-          placeholder="Nhập số tiền"
-          value={formData.amount || ''}
-          onChange={(e) =>
-            handleInputChange('amount', parseFloat(e.target.value) || 0)
-          }
-          className="text-sm h-12"
-        />
+      <div className="grid grid-cols-2 gap-2">
+        <div>
+          <Input
+            type="number"
+            placeholder="Nhập số tiền"
+            value={formData.amount || ''}
+            onChange={(e) =>
+              handleInputChange('amount', parseFloat(e.target.value) || 0)
+            }
+            className="text-sm h-12"
+          />
+        </div>
+        <div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className="w-full h-12 justify-between text-left text-sm"
+              >
+                <span
+                  className={
+                    formData.category
+                      ? 'text-foreground'
+                      : 'text-muted-foreground'
+                  }
+                >
+                  {formData.category
+                    ? getCategoryName(formData.category)
+                    : 'Chọn danh mục'}
+                </span>
+                <ChevronDown className="h-4 w-4 opacity-50" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-full min-w-[200px]" align="start">
+              <DropdownMenuLabel>Danh mục chi tiêu</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {categories.map((category: CategoryType) => (
+                <DropdownMenuItem
+                  key={category.id}
+                  onClick={() => handleInputChange('category', category.id)}
+                  className="cursor-pointer"
+                >
+                  {category.name}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
 
       {/* Mô tả */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Mô tả
-        </label>
+      <div className="flex flex-row gap-2">
         <Input
           type="text"
           placeholder="Nhập mô tả giao dịch"
@@ -164,63 +194,25 @@ const ExpenseForm = ({ onSubmit }: ExpenseFormProps) => {
       </div>
 
       {/* Danh mục */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Danh mục
-        </label>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="outline"
-              className="w-full h-12 justify-between text-left text-sm"
-            >
-              <span
-                className={
-                  formData.category
-                    ? 'text-foreground'
-                    : 'text-muted-foreground'
-                }
-              >
-                {formData.category
-                  ? getCategoryName(formData.category)
-                  : 'Chọn danh mục'}
-              </span>
-              <ChevronDown className="h-4 w-4 opacity-50" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-full min-w-[200px]" align="start">
-            <DropdownMenuLabel>Danh mục chi tiêu</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            {categories.map((category: CategoryType) => (
-              <DropdownMenuItem
-                key={category.id}
-                onClick={() => handleInputChange('category', category.id)}
-                className="cursor-pointer"
-              >
-                {category.name}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
 
       {/* Ngày tháng */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Ngày tháng
-        </label>
+      <div className="flex flex-row gap-2">
         <DateTimePicker
           hourCycle={24}
           value={date24}
           onChange={handleDateChange}
-          locale={vi}
           placeholder="Chọn ngày tháng"
-          className="text-sm"
+          className="text-sm  h-12"
+          displayFormat={{
+            hour24: 'dd/MM/yyyy HH:mm',
+            hour12: 'dd/MM/yyyy hh:mm a',
+          }}
+          granularity="minute"
         />
       </div>
       {/* Credit card */}
       {creditCards.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-2">
           {creditCards.map((card) => (
             <Label
               key={card.id}
@@ -243,44 +235,8 @@ const ExpenseForm = ({ onSubmit }: ExpenseFormProps) => {
           ))}
         </div>
       )}
-      {/* Preview */}
-      {formData.amount > 0 && formData.description && formData.category && (
-        <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 border">
-          <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Xem trước
-          </h3>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-medium text-gray-900 dark:text-white">
-                {formData.description}
-              </p>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                {formData.category
-                  ? getCategoryName(formData.category)
-                  : 'Chọn danh mục'}{' '}
-                •{' '}
-                {date24
-                  ? format(date24, 'dd/MM/yyyy HH:mm')
-                  : format(new Date(), 'dd/MM/yyyy HH:mm')}
-              </p>
-              {formData.credit_card && (
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  {
-                    creditCards.find((card) => card.id === formData.credit_card)
-                      ?.card_name
-                  }
-                </p>
-              )}
-            </div>
-            <span className="text-lg font-semibold text-red-600 dark:text-red-400">
-              -{formatCurrency(formData.amount)}
-            </span>
-          </div>
-        </div>
-      )}
-
       {/* Buttons */}
-      <div className="flex gap-3 pt-6">
+      <div className="flex gap-3 ">
         <Button
           type="button"
           variant="outline"

@@ -34,3 +34,19 @@ export const STATS_MENU_TITLE = {
   [STATS_MENU.BALANCE]: 'Số dư',
   [STATS_MENU.TRANSACTION]: 'Giao dịch',
 };
+
+export const MONTHS = [
+  { value: 'Jan', label: 'Tháng 1', index: 0 },
+  { value: 'Feb', label: 'Tháng 2', index: 1 },
+  { value: 'Mar', label: 'Tháng 3', index: 2 },
+  { value: 'Apr', label: 'Tháng 4', index: 3 },
+  { value: 'May', label: 'Tháng 5', index: 4 },
+  { value: 'Jun', label: 'Tháng 6', index: 5 },
+  { value: 'Jul', label: 'Tháng 7', index: 6 },
+  { value: 'Aug', label: 'Tháng 8', index: 7 },
+  { value: 'Sep', label: 'Tháng 9', index: 8 },
+  { value: 'Oct', label: 'Tháng 10', index: 9 },
+  { value: 'Nov', label: 'Tháng 11', index: 10 },
+  { value: 'Dec', label: 'Tháng 12', index: 11 },
+  { value: 'All', label: 'Tất cả', index: 12 },
+];

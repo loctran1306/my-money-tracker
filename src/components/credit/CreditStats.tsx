@@ -3,21 +3,13 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { STATS_MENU, STATS_MENU_TITLE } from '@/constants';
-import { FilterContext } from '@/contexts/FilterContext';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { formatCurrency } from '@/lib/utils';
 import { selectUser } from '@/store/selectors/userSelectors';
-import { fetchTransactionStats } from '@/store/slices/transactionSlice';
-import { RefreshCw, TrendingDown, TrendingUp, Wallet } from 'lucide-react';
-import { useContext } from 'react';
+import { fetchCreditCards } from '@/store/thunks/creditCardThunk';
+import { RefreshCw, TrendingDown, Wallet } from 'lucide-react';
 
 const statsMenu = [
-  {
-    id: STATS_MENU.INCOME,
-    title: STATS_MENU_TITLE[STATS_MENU.INCOME],
-    icon: TrendingUp,
-    color: 'text-green-600',
-  },
   {
     id: STATS_MENU.BALANCE,
     title: STATS_MENU_TITLE[STATS_MENU.BALANCE],
@@ -32,30 +24,23 @@ const statsMenu = [
   },
 ];
 
-const TransactionStats = () => {
-  const { dateRange } = useContext(FilterContext);
+const CreditStats = () => {
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
-  const { stats, loading, error } = useAppSelector(
-    (state) => state.transactions
+  const { creditCards, loading, error } = useAppSelector(
+    (state) => state.creditCard
   );
 
   const handleRefresh = () => {
     if (user?.id) {
-      dispatch(
-        fetchTransactionStats({
-          userId: user.id,
-          startDate: dateRange.startDate,
-          endDate: dateRange.endDate,
-        })
-      );
+      dispatch(fetchCreditCards(user.id));
     }
   };
 
   if (loading) {
     return (
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 ">
-        {[1, 2, 3].map((i) => (
+        {[1, 2, 3, 4].map((i) => (
           <Card key={i} className="animate-pulse">
             <CardContent className="p-6">
               <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
@@ -89,23 +74,32 @@ const TransactionStats = () => {
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-      {statsMenu.map((stat) => (
-        <Card key={stat.id}>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 ">
-            <CardTitle className="text-sm font-bold">{stat.title}</CardTitle>
-            <stat.icon className={`h-4 w-4 ${stat.color}`} />
-          </CardHeader>
-          <CardContent>
-            <div className={`text-xl font-bold ${stat.color}`}>
-              {stat.id !== STATS_MENU.TRANSACTION
-                ? formatCurrency(stats?.[stat.id] || 0)
-                : stats?.[stat.id] || 0}
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+      {creditCards.map((card) =>
+        statsMenu.map((stat) => {
+          const title = `${stat.title} ${card.card_name.split(' ')[1].slice(0, 6)}`;
+          const renderTotal = () => {
+            if (stat.id === STATS_MENU.BALANCE) {
+              return card.credit_limit - card.current_balance;
+            }
+            return card.current_balance;
+          };
+          return (
+            <Card key={card.id + stat.id}>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 ">
+                <CardTitle className="text-sm font-bold">{title}</CardTitle>
+                <stat.icon className={`h-4 w-4 ${stat.color}`} />
+              </CardHeader>
+              <CardContent>
+                <div className={`text-xl font-bold ${stat.color}`}>
+                  {formatCurrency(renderTotal() || 0)}
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })
+      )}
     </div>
   );
 };
 
-export default TransactionStats;
+export default CreditStats;

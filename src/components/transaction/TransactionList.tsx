@@ -1,27 +1,35 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { FilterContext } from '@/contexts/FilterContext';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { formatCurrency } from '@/lib/utils';
+import { selectUser } from '@/store/selectors/userSelectors';
 import {
   removeTransaction,
   setTransactionEdit,
   Transaction,
 } from '@/store/slices/transactionSlice';
 import { format } from 'date-fns';
-import { Edit, Trash2, TrendingDown, TrendingUp } from 'lucide-react';
+import { Edit, Trash2 } from 'lucide-react';
+import { useContext } from 'react';
 import { toast } from 'sonner';
+import IconButton from '../shared/IconButton';
 import { Badge } from '../ui/badge';
 
 const TransactionList = () => {
+  const { setOpenTransactionForm } = useContext(FilterContext);
   const dispatch = useAppDispatch();
+  const user = useAppSelector(selectUser);
+  const { setTimeRefresh } = useContext(FilterContext);
   const { transactions, loading, error } = useAppSelector(
     (state) => state.transactions
   );
   const handleDelete = async (id: string) => {
+    if (!user) return;
     const result = await dispatch(removeTransaction(id));
     if (result.payload) {
+      setTimeRefresh(Date.now());
       toast.success('Xóa giao dịch thành công', {
         position: 'top-right',
         style: {
@@ -40,10 +48,11 @@ const TransactionList = () => {
 
   const handleEdit = (transaction: Transaction) => {
     dispatch(setTransactionEdit(transaction));
+    setOpenTransactionForm(true);
   };
 
   const formatDate = (dateString: string) => {
-    return format(new Date(dateString), 'dd/MM/yyyy HH:mm');
+    return format(new Date(dateString), 'dd/MM HH:mm');
   };
 
   if (loading) {
@@ -53,7 +62,7 @@ const TransactionList = () => {
           <CardTitle>Danh sách giao dịch</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="animate-pulse space-y-4">
+          <div className="animate-pulse space-y-4 h-85 sm:h-140 overflow-y-auto scroll-smooth">
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
@@ -93,29 +102,16 @@ const TransactionList = () => {
             Chưa có giao dịch nào
           </div>
         ) : (
-          <div className="space-y-4 max-h-120 overflow-y-auto scroll-smooth">
+          <div className="space-y-4 h-85 sm:h-140 overflow-y-auto scroll-smooth">
             {transactions.map((transaction: Transaction) => (
               <div
                 key={transaction.id}
-                className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                className="flex items-center justify-between p-2 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
               >
-                <div className="flex items-center gap-4">
-                  <div
-                    className={`p-2 rounded-full ${
-                      transaction.type === 'income'
-                        ? 'bg-green-100 text-green-600 dark:bg-green-900/20 dark:text-green-400'
-                        : 'bg-red-100 text-red-600 dark:bg-red-900/20 dark:text-red-400'
-                    }`}
-                  >
-                    {transaction.type === 'income' ? (
-                      <TrendingUp size={16} />
-                    ) : (
-                      <TrendingDown size={16} />
-                    )}
-                  </div>
-                  <div>
+                <div className="p-2 rounded-md w-65 space-y-1">
+                  <div className="flex flex-row items-center justify-between gap-2">
                     <div
-                      className={`font-semibold ${
+                      className={`text-sm font-semibold ${
                         transaction.type === 'income'
                           ? 'text-green-600'
                           : 'text-red-600'
@@ -124,32 +120,42 @@ const TransactionList = () => {
                       {transaction.type === 'income' ? '+ ' : '- '}
                       {formatCurrency(transaction.amount)}
                     </div>
-
-                    <div className="text-sm text-gray-500">
-                      {transaction.categories?.name} • {transaction.note}
-                      <div className="text-sm">
-                        {formatDate(transaction.date)}
-                      </div>
+                    <div className="text-xs text-gray-500">
+                      {transaction.categories?.name}
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {formatDate(transaction.date)}
                     </div>
                   </div>
+
+                  <div className="text-xs flex flex-row items-center justify-between gap-2">
+                    <div className="text-xs text-gray-500">
+                      {transaction.note}
+                    </div>
+                    {transaction.credit_cards && (
+                      <div className="text-xs text-blue-500 italic">
+                        {transaction.credit_cards.card_name}
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <div className="flex items-center gap-1">
-                  <Button
-                    className="text-gray-500 hover:text-gray-700 hover:bg-gray-50 dark:hover:bg-gray-900/20"
-                    variant="ghost"
-                    size="sm"
+                <div className="flex items-center gap-2">
+                  <IconButton
+                    icon={<Edit size={10} />}
                     onClick={() => handleEdit(transaction)}
-                  >
-                    <Edit size={10} />
-                  </Button>
-                  <Button
-                    variant="ghost"
                     size="sm"
+                    style={{
+                      color: 'green',
+                    }}
+                  />
+                  <IconButton
+                    icon={<Trash2 size={10} />}
                     onClick={() => handleDelete(transaction.id)}
-                    className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
-                  >
-                    <Trash2 size={10} />
-                  </Button>
+                    size="sm"
+                    style={{
+                      color: 'red',
+                    }}
+                  />
                 </div>
               </div>
             ))}

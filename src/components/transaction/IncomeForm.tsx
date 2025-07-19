@@ -94,9 +94,6 @@ const IncomeForm = ({ onSubmit }: IncomeFormProps) => {
 
       {/* Số tiền */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Số tiền (₫)
-        </label>
         <Input
           type="number"
           placeholder="Nhập số tiền"
@@ -111,9 +108,6 @@ const IncomeForm = ({ onSubmit }: IncomeFormProps) => {
 
       {/* Mô tả */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Mô tả
-        </label>
         <Input
           type="text"
           placeholder="Nhập mô tả giao dịch"
@@ -126,46 +120,23 @@ const IncomeForm = ({ onSubmit }: IncomeFormProps) => {
 
       {/* Ngày tháng */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Ngày tháng
-        </label>
         <DateTimePicker
           hourCycle={24}
           value={date24}
           onChange={handleDateChange}
           locale={vi}
           placeholder="Chọn ngày tháng"
-          disabled
-          displayFormat={{ hour24: 'dd/MM/yyyy' }}
+          className="h-12"
+          displayFormat={{
+            hour24: 'dd/MM/yyyy HH:mm',
+            hour12: 'dd/MM/yyyy hh:mm a',
+          }}
+          granularity="minute"
         />
       </div>
 
-      {/* Preview */}
-      {formData.amount > 0 && (
-        <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 border">
-          <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Xem trước
-          </h3>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-medium text-gray-900 dark:text-white">
-                {formData.description}
-              </p>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                {date24
-                  ? date24.toLocaleDateString('vi-VN')
-                  : new Date().toLocaleDateString('vi-VN')}
-              </p>
-            </div>
-            <span className="text-lg font-semibold text-green-600 dark:text-green-400">
-              +{formData.amount.toLocaleString('vi-VN')}₫
-            </span>
-          </div>
-        </div>
-      )}
-
       {/* Buttons */}
-      <div className="flex gap-3 pt-6">
+      <div className="flex gap-3 ">
         <Button
           type="button"
           variant="outline"

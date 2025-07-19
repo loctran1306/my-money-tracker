@@ -4,6 +4,7 @@ import Footer from '@/components/shared/Footer';
 import StoreProvider from '@/components/StoreProvider';
 import { ThemeProvider } from '@/components/ui/theme-provider';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { FilterProvider } from '@/contexts/FilterContext';
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { Toaster } from 'sonner';
@@ -45,9 +46,16 @@ export default function RootLayout({
           >
             <AuthProvider>
               <ProtectedRoute>
-                <CommonLayout>{children}</CommonLayout>
-                <Toaster />
-                <Footer />
+                <FilterProvider>
+                  <CommonLayout>{children}</CommonLayout>
+                  <Toaster
+                    position="top-right"
+                    richColors
+                    closeButton
+                    duration={4000}
+                  />
+                  <Footer />
+                </FilterProvider>
               </ProtectedRoute>
             </AuthProvider>
           </ThemeProvider>

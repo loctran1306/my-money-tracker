@@ -8,7 +8,6 @@ import {
   TransactionInput,
   updateTransaction,
 } from '@/lib/supabase-db';
-import { supabaseServices } from '@/services/supabase/supabase.services';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 // Types
@@ -24,7 +23,7 @@ export interface Transaction {
   };
   user_id: string;
   credit_card_id: string | null;
-  credit_card: {
+  credit_cards: {
     card_name: string;
   };
 }
@@ -51,7 +50,6 @@ export interface TransactionState {
   transactions: Transaction[];
   transactionEdit: Transaction | null;
   categories: Category[];
-  creditCards: CreditCard[];
   stats: TransactionStats | null;
   loading: boolean;
   error: string | null;
@@ -62,7 +60,6 @@ const initialState: TransactionState = {
   transactions: [],
   transactionEdit: null,
   categories: [],
-  creditCards: [],
   stats: null,
   loading: false,
   error: null,
@@ -71,9 +68,20 @@ const initialState: TransactionState = {
 // Async thunks
 export const fetchTransactions = createAsyncThunk(
   'transactions/fetchTransactions',
-  async (userId: string, { rejectWithValue }) => {
+  async (
+    {
+      userId,
+      startDate,
+      endDate,
+    }: {
+      userId: string;
+      startDate: string | Date | null;
+      endDate: string | Date | null;
+    },
+    { rejectWithValue }
+  ) => {
     try {
-      const { data, error } = await getTransactions(userId);
+      const { data, error } = await getTransactions(userId, startDate, endDate);
       if (error) {
         return rejectWithValue(error);
       }
@@ -89,21 +97,6 @@ export const fetchCategories = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const { data, error } = await getCategories();
-      if (error) {
-        return rejectWithValue(error);
-      }
-      return data;
-    } catch (error) {
-      return rejectWithValue((error as Error).message);
-    }
-  }
-);
-
-export const fetchCreditCards = createAsyncThunk(
-  'transactions/fetchCreditCards',
-  async (userId: string, { rejectWithValue }) => {
-    try {
-      const { data, error } = await supabaseServices.getCreditCards(userId);
       if (error) {
         return rejectWithValue(error);
       }
@@ -164,9 +157,24 @@ export const removeTransaction = createAsyncThunk(
 
 export const fetchTransactionStats = createAsyncThunk(
   'transactions/fetchStats',
-  async (userId: string, { rejectWithValue }) => {
+  async (
+    {
+      userId,
+      startDate,
+      endDate,
+    }: {
+      userId: string;
+      startDate: string | Date | null;
+      endDate: string | Date | null;
+    },
+    { rejectWithValue }
+  ) => {
     try {
-      const { stats, error } = await getTransactionStats(userId);
+      const { stats, error } = await getTransactionStats(
+        userId,
+        startDate,
+        endDate
+      );
       if (error) {
         return rejectWithValue(error);
       }
@@ -219,20 +227,6 @@ const transactionSlice = createSlice({
         state.categories = action.payload as unknown as Category[];
       })
       .addCase(fetchCategories.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
-      })
-
-      // Fetch credit cards
-      .addCase(fetchCreditCards.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchCreditCards.fulfilled, (state, action) => {
-        state.loading = false;
-        state.creditCards = action.payload as unknown as CreditCard[];
-      })
-      .addCase(fetchCreditCards.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
