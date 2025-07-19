@@ -101,7 +101,7 @@ const IncomeForm = ({ onSubmit }: IncomeFormProps) => {
           onChange={(e) =>
             handleInputChange('amount', parseFloat(e.target.value) || 0)
           }
-          className="text-sm h-12"
+          className="text-base h-12"
           disabled={loading}
         />
       </div>
@@ -113,7 +113,7 @@ const IncomeForm = ({ onSubmit }: IncomeFormProps) => {
           placeholder="Nhập mô tả giao dịch"
           value={formData.description}
           onChange={(e) => handleInputChange('description', e.target.value)}
-          className="h-12 text-sm"
+          className="h-12 text-base"
           disabled={loading}
         />
       </div>

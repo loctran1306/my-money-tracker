@@ -141,7 +141,7 @@ const ExpenseForm = ({ onSubmit }: ExpenseFormProps) => {
             onChange={(e) =>
               handleInputChange('amount', parseFloat(e.target.value) || 0)
             }
-            className="text-sm h-12"
+            className="text-base h-12"
           />
         </div>
         <div>
@@ -189,7 +189,7 @@ const ExpenseForm = ({ onSubmit }: ExpenseFormProps) => {
           placeholder="Nhập mô tả giao dịch"
           value={formData.description}
           onChange={(e) => handleInputChange('description', e.target.value)}
-          className="h-12 text-sm"
+          className="h-12 text-base"
         />
       </div>
 
