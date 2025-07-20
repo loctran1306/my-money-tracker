@@ -4,9 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { STATS_MENU, STATS_MENU_TITLE } from '@/constants';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-import { formatCurrency } from '@/lib/utils';
 import { selectUser } from '@/store/selectors/userSelectors';
 import { fetchCreditCards } from '@/store/thunks/creditCardThunk';
+import { formatCurrency } from '@/utils/func';
 import { RefreshCw, TrendingDown, Wallet } from 'lucide-react';
 
 const statsMenu = [
@@ -76,7 +76,7 @@ const CreditStats = () => {
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
       {creditCards.map((card) =>
         statsMenu.map((stat) => {
-          const title = `${stat.title} ${card.card_name.split(' ')[1].slice(0, 6)}`;
+          const title = `${stat.title} ${card.card_name.split(' ')[1].slice(0, 3)}`;
           const renderTotal = () => {
             if (stat.id === STATS_MENU.BALANCE) {
               return card.credit_limit - card.current_balance;
@@ -90,7 +90,7 @@ const CreditStats = () => {
                 <stat.icon className={`h-4 w-4 ${stat.color}`} />
               </CardHeader>
               <CardContent>
-                <div className={`text-xl font-bold ${stat.color}`}>
+                <div className={`text-lg font-bold ${stat.color}`}>
                   {formatCurrency(renderTotal() || 0)}
                 </div>
               </CardContent>

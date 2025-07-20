@@ -5,9 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { STATS_MENU, STATS_MENU_TITLE } from '@/constants';
 import { FilterContext } from '@/contexts/FilterContext';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-import { formatCurrency } from '@/lib/utils';
 import { selectUser } from '@/store/selectors/userSelectors';
-import { fetchTransactionStats } from '@/store/slices/transactionSlice';
+import { fetchTransactionStats } from '@/store/thunks/transactionThunk';
+import { formatCurrency } from '@/utils/func';
 import { RefreshCw, TrendingDown, TrendingUp, Wallet } from 'lucide-react';
 import { useContext } from 'react';
 
@@ -96,7 +96,7 @@ const TransactionStats = () => {
             <stat.icon className={`h-4 w-4 ${stat.color}`} />
           </CardHeader>
           <CardContent>
-            <div className={`text-xl font-bold ${stat.color}`}>
+            <div className={`text-lg font-bold ${stat.color}`}>
               {stat.id !== STATS_MENU.TRANSACTION
                 ? formatCurrency(stats?.[stat.id] || 0)
                 : stats?.[stat.id] || 0}

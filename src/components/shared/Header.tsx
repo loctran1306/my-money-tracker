@@ -46,7 +46,7 @@ const Header = ({ isOpen, handleToggleSidebar }: HeaderProps) => {
     setMonthSelected(value);
   };
   return (
-    <div className="flex items-center gap-2 p-4 justify-between">
+    <div className="sticky top-0 z-10 flex items-center gap-2 p-3 justify-between   ">
       {user && (
         <IconButton
           onClick={handleToggleSidebar}
@@ -59,7 +59,7 @@ const Header = ({ isOpen, handleToggleSidebar }: HeaderProps) => {
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
-                className="w-full h-8 justify-between text-left text-sm"
+                className="w-full h-8 justify-between text-left text-xs"
               >
                 {MONTHS.find((m) => m.value === monthSelected)?.label ||
                   'Tháng'}
@@ -67,7 +67,7 @@ const Header = ({ isOpen, handleToggleSidebar }: HeaderProps) => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
-              className="w-full min-w-[120px] max-h-[300px] overflow-y-auto"
+              className="w-full min-w-[100px] max-h-[300px] overflow-y-auto"
               align="start"
             >
               <DropdownMenuSeparator />
@@ -76,7 +76,7 @@ const Header = ({ isOpen, handleToggleSidebar }: HeaderProps) => {
                 <DropdownMenuItem
                   key={month.value}
                   onClick={() => handleMonthChange(month.value)}
-                  className={`cursor-pointer ${
+                  className={`cursor-pointer text-sm ${
                     month.value === monthSelected
                       ? 'bg-gray-100 dark:bg-gray-700'
                       : ''

@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-import { TransactionInput } from '@/lib/supabase-db';
+import { TransactionInput } from '@/services/transaction/transaction.type';
 import { selectUser } from '@/store/selectors/userSelectors';
 import { setTransactionEdit } from '@/store/slices/transactionSlice';
 import { Label } from '@radix-ui/react-dropdown-menu';
@@ -53,7 +53,7 @@ const ExpenseForm = ({ onSubmit }: ExpenseFormProps) => {
   const transactionEdit = useAppSelector(
     (state) => state.transactions.transactionEdit
   );
-  const categories = useAppSelector((state) => state.transactions.categories);
+  const categories = useAppSelector((state) => state.category.categories);
   const creditCards = useAppSelector((state) => state.creditCard.creditCards);
 
   const user = useAppSelector(selectUser);

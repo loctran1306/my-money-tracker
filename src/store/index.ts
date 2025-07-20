@@ -1,4 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
+import categoryReducer from './slices/categorySlice';
 import creditCardReducer from './slices/creditCardSlice';
 import transactionReducer from './slices/transactionSlice';
 import userReducer from './slices/userSlice';
@@ -8,6 +9,7 @@ export const store = configureStore({
     transactions: transactionReducer,
     creditCard: creditCardReducer,
     user: userReducer,
+    category: categoryReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

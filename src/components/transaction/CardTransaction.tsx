@@ -8,9 +8,9 @@ import IncomeForm from './IncomeForm';
 
 import { FilterContext } from '@/contexts/FilterContext';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-import { updateTransaction } from '@/lib/supabase-db';
 import { showToast } from '@/lib/toast';
-import { addNewTransaction } from '@/store/slices/transactionSlice';
+import transactionServices from '@/services/transaction/transaction.services';
+import { addNewTransaction } from '@/store/thunks/transactionThunk';
 import { useContext, useEffect, useState } from 'react';
 import LoadingChildScreen from '../shared/LoadingChildScreen';
 
@@ -38,7 +38,7 @@ const CardTransaction = () => {
         ...transactionData,
         updated_at: new Date().toISOString(),
       };
-      const result = await updateTransaction(
+      const result = await transactionServices.updateTransaction(
         transactionEdit.id,
         newTransactionData
       );

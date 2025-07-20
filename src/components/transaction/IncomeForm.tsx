@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-import { TransactionInput } from '@/lib/supabase-db';
+import { TransactionInput } from '@/services/transaction/transaction.type';
 import { selectUser } from '@/store/selectors/userSelectors';
 import { setTransactionEdit } from '@/store/slices/transactionSlice';
 import { vi } from 'date-fns/locale';

@@ -1,6 +1,14 @@
 import { supabase } from '@/lib/supabase';
 
-export const supabaseServices = {
+export const categoryServices = {
+  getCategories: async () => {
+    try {
+      const { data, error } = await supabase.from('categories').select('*');
+      return { data, error };
+    } catch (error: unknown) {
+      return { data: [], error: (error as Error).message };
+    }
+  },
   // Thêm transaction mới
   async addCategory(category: { name: string }) {
     try {

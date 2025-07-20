@@ -3,8 +3,8 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAppSelector } from '@/hooks/redux';
+import { Category } from '@/services/category/category.type';
 import { selectUser } from '@/store/selectors/userSelectors';
-import { Category } from '@/store/slices/transactionSlice';
 import { RotateCcw, Send } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import CustomAlert from '../shared/custom-alert';
@@ -80,7 +80,7 @@ const CategoryForm = ({ onSubmit, categoryEdit }: CategoryFormProps) => {
           placeholder="Nhập tên danh mục"
           value={formData.name}
           onChange={(e) => handleInputChange('name', e.target.value)}
-          className="h-12 text-sm"
+          className="h-12 text-base"
         />
       </div>
 

@@ -3,13 +3,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FilterContext } from '@/contexts/FilterContext';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-import { formatCurrency } from '@/lib/utils';
+import { Transaction } from '@/services/transaction/transaction.type';
 import { selectUser } from '@/store/selectors/userSelectors';
-import {
-  removeTransaction,
-  setTransactionEdit,
-  Transaction,
-} from '@/store/slices/transactionSlice';
+import { setTransactionEdit } from '@/store/slices/transactionSlice';
+import { removeTransaction } from '@/store/thunks/transactionThunk';
+import { formatCurrency } from '@/utils/func';
 import { format } from 'date-fns';
 import { Edit, Trash2 } from 'lucide-react';
 import { useContext } from 'react';

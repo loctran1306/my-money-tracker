@@ -1,12 +1,13 @@
 'use client';
 import CategoryForm from '@/components/category/CategoryForm';
+import IconButton from '@/components/shared/IconButton';
 import CustomAlert from '@/components/shared/custom-alert';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-import { supabaseServices } from '@/services/supabase/supabase.services';
-import { Category, fetchCategories } from '@/store/slices/transactionSlice';
+import { categoryServices } from '@/services/category/category.services';
+import { Category } from '@/services/category/category.type';
+import { fetchCategories } from '@/store/thunks/categoryThunk';
 import { List, Pencil, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -17,10 +18,10 @@ const CategoriesPage = () => {
   );
   const [categoryEdit, setCategoryEdit] = useState<Category | null>(null);
 
-  const categories = useAppSelector((state) => state.transactions.categories);
+  const categories = useAppSelector((state) => state.category.categories);
   const dispatch = useAppDispatch();
   const handleDelete = async (id: string) => {
-    const result = await supabaseServices.deleteCategory(id);
+    const result = await categoryServices.deleteCategory(id);
     if (result.error) {
       setAlert('Danh mục đang được dùng để phân loại giao dịch');
       setAlertType('error');
@@ -41,7 +42,7 @@ const CategoriesPage = () => {
 
   const handleSubmit = async (data: { name: string }) => {
     if (categoryEdit) {
-      const result = await supabaseServices.updateCategory(
+      const result = await categoryServices.updateCategory(
         categoryEdit.id,
         data
       );
@@ -58,7 +59,7 @@ const CategoriesPage = () => {
         }, 3000);
       }
     } else {
-      const result = await supabaseServices.addCategory(data);
+      const result = await categoryServices.addCategory(data);
       if (result.error) {
         setAlert('Thêm danh mục thất bại');
         setAlertType('error');
@@ -114,23 +115,23 @@ const CategoriesPage = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-end ">
-                    <Button
-                      variant="ghost"
-                      size="icon"
+                  <div className="flex items-end gap-2">
+                    <IconButton
+                      icon={<Pencil size={10} />}
                       onClick={() => handleEdit(category)}
-                      className=" text-blue-500 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/20"
-                    >
-                      <Pencil size={10} />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
+                      style={{
+                        color: 'green',
+                      }}
+                      size="sm"
+                    />
+                    <IconButton
+                      icon={<Trash2 size={10} />}
                       onClick={() => handleDelete(category.id)}
-                      className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
-                    >
-                      <Trash2 size={10} />
-                    </Button>
+                      style={{
+                        color: 'red',
+                      }}
+                      size="sm"
+                    />
                   </div>
                 </div>
               ))}

@@ -6,11 +6,11 @@ import TransactionList from '@/components/transaction/TransactionList';
 import TransactionStats from '@/components/transaction/TransactionStats';
 import { FilterContext } from '@/contexts/FilterContext';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+import { fetchCreditCards } from '@/store/thunks/creditCardThunk';
 import {
   fetchTransactions,
   fetchTransactionStats,
-} from '@/store/slices/transactionSlice';
-import { fetchCreditCards } from '@/store/thunks/creditCardThunk';
+} from '@/store/thunks/transactionThunk';
 import { useContext, useEffect } from 'react';
 
 export default function DashboardPage() {

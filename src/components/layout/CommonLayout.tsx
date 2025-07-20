@@ -2,7 +2,7 @@
 
 import Sidebar from '@/components/Sidebar';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-import { fetchCategories } from '@/store/slices/transactionSlice';
+import { fetchCategories } from '@/store/thunks/categoryThunk';
 
 import React, { useEffect, useState } from 'react';
 import BottomNav from '../shared/BottomNav';
