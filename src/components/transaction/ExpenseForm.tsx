@@ -228,8 +228,8 @@ const ExpenseForm = ({ onSubmit }: ExpenseFormProps) => {
                   }));
                 }}
               />
-              <p className="text-sm leading-none font-medium">
-                {card.card_name}
+              <p className="text-xs leading-none font-medium">
+                {card.card_name.slice(0, 10)}
               </p>
             </Label>
           ))}

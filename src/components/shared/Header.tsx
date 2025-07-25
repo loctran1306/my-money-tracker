@@ -46,14 +46,16 @@ const Header = ({ isOpen, handleToggleSidebar }: HeaderProps) => {
     setMonthSelected(value);
   };
   return (
-    <div className="sticky top-0 z-10 flex items-center gap-2 p-3 justify-between   ">
+    <div className="sticky top-0 z-10 flex items-center gap-2 p-3 justify-between">
       {user && (
-        <IconButton
-          onClick={handleToggleSidebar}
-          icon={isOpen ? <ChevronLeft /> : <ChevronRight />}
-        />
+        <div className="hidden sm:block">
+          <IconButton
+            onClick={handleToggleSidebar}
+            icon={isOpen ? <ChevronLeft /> : <ChevronRight />}
+          />
+        </div>
       )}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 w-full justify-end">
         <div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

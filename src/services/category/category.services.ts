@@ -45,7 +45,7 @@ export const categoryServices = {
     }
   },
 
-  async updateCategory(id: string, category: { name: string }) {
+  async updateCategory(id: string, category: { name: string; limit: number }) {
     try {
       const { data, error } = await supabase
         .from('categories')

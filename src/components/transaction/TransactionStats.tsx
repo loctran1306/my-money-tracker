@@ -88,15 +88,15 @@ const TransactionStats = () => {
   }
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
       {statsMenu.map((stat) => (
-        <Card key={stat.id}>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 ">
+        <Card key={stat.id} className="p-2 gap-2">
+          <CardHeader className="flex flex-row items-center justify-between px-2">
             <CardTitle className="text-sm font-bold">{stat.title}</CardTitle>
             <stat.icon className={`h-4 w-4 ${stat.color}`} />
           </CardHeader>
-          <CardContent>
-            <div className={`text-lg font-bold ${stat.color}`}>
+          <CardContent className="px-2">
+            <div className={`text-lg font-bold ${stat.color} `}>
               {stat.id !== STATS_MENU.TRANSACTION
                 ? formatCurrency(stats?.[stat.id] || 0)
                 : stats?.[stat.id] || 0}

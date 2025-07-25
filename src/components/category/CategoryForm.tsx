@@ -20,7 +20,7 @@ export interface TransactionData {
 }
 
 interface CategoryFormProps {
-  onSubmit: (data: { name: string }) => void;
+  onSubmit: (data: { name: string; limit: number }) => void;
   categoryEdit: Category | null;
 }
 
@@ -28,11 +28,12 @@ const CategoryForm = ({ onSubmit, categoryEdit }: CategoryFormProps) => {
   const [showError, setShowError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: '',
+    limit: 0,
   });
   const user = useAppSelector(selectUser);
 
   const resetForm = () => {
-    setFormData({ name: '' });
+    setFormData({ name: '', limit: 0 });
     setShowError(null);
   };
 
@@ -54,7 +55,7 @@ const CategoryForm = ({ onSubmit, categoryEdit }: CategoryFormProps) => {
 
   useEffect(() => {
     if (categoryEdit) {
-      setFormData({ name: categoryEdit.name });
+      setFormData({ name: categoryEdit.name, limit: categoryEdit.limit });
     }
   }, [categoryEdit]);
 
@@ -67,20 +68,28 @@ const CategoryForm = ({ onSubmit, categoryEdit }: CategoryFormProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-2 mt-2">
       {/* Alert */}
       {showError && <CustomAlert title={showError} type="warning" />}
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Tên danh mục (Không được trùng)
-        </label>
         <Input
           type="text"
           placeholder="Nhập tên danh mục"
           value={formData.name}
           onChange={(e) => handleInputChange('name', e.target.value)}
           className="h-12 text-base"
+        />
+      </div>
+      <div>
+        <Input
+          type="number"
+          placeholder="Nhập hạn mức"
+          value={formData.limit || ''}
+          onChange={(e) =>
+            handleInputChange('limit', parseFloat(e.target.value) || 0)
+          }
+          className="text-base h-12"
         />
       </div>
 

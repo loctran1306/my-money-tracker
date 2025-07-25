@@ -25,11 +25,11 @@ export default function BottomNav() {
   const dispatch = useAppDispatch();
   const isActive = (href: string) => pathname === href;
   return (
-    <nav className="fixed bottom-0 left-0 right-0 px-4 z-50 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 flex justify-between items-start h-17 md:hidden">
+    <nav className="fixed bottom-0 left-0 right-0  z-50 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 flex justify-between items-start h-17 md:hidden">
       {navItems.map((item) => {
         if (item.href === '/stats/') {
           return (
-            <div key={item.href} className="flex justify-center ">
+            <div key={item.href} className="flex justify-center p-2">
               <Popover
                 open={openTransactionForm}
                 onOpenChange={(open) => {
@@ -51,7 +51,7 @@ export default function BottomNav() {
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent
-                  className="w-100 p-0 rounded-full sm:hidden"
+                  className="w-96 p-0 rounded-full sm:hidden mb-1"
                   align="center"
                   side="top"
                 >

@@ -72,9 +72,9 @@ const CardTransaction = () => {
   }, [transactionEdit]);
 
   return (
-    <Card className="w-full relative">
+    <Card className="w-full relative py-2">
       {loading && <LoadingChildScreen />}
-      <CardContent>
+      <CardContent className="p-2">
         <Tabs value={tab} className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-6">
             <TabsTrigger
