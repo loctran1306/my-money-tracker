@@ -12,10 +12,12 @@ export default function DashboardPage() {
       <TransactionStats />
       <span className="font-bold">Thẻ</span>
       <CreditStats />
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <span className="font-bold">Danh sách giao dịch</span>
-        <TransactionList isDashboard />
-        <div className="hidden sm:block">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="flex flex-col gap-2">
+          <span className="font-bold">Danh sách giao dịch</span>
+          <TransactionList isDashboard />
+        </div>
+        <div className="hidden sm:block mt-8">
           <CardTransaction />
         </div>
       </div>

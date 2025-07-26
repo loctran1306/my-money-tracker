@@ -48,8 +48,13 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     return <LoadingScreen />;
   }
 
-  // Nếu là trang công khai hoặc đã đăng nhập -> hiển thị nội dung
-  if (isPublicRoute || user) {
+  // Nếu là trang công khai -> hiển thị nội dung trực tiếp (không có CommonLayout)
+  if (isPublicRoute) {
+    return <>{children}</>;
+  }
+
+  // Nếu đã đăng nhập -> hiển thị nội dung với CommonLayout
+  if (user) {
     return <>{children}</>;
   }
 

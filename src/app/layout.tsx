@@ -1,6 +1,4 @@
-import CommonLayout from '@/components/layout/CommonLayout';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
-import Footer from '@/components/shared/Footer';
 import StoreProvider from '@/components/StoreProvider';
 import { ThemeProvider } from '@/components/ui/theme-provider';
 import { AuthProvider } from '@/contexts/AuthContext';
@@ -45,18 +43,15 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <AuthProvider>
-              <ProtectedRoute>
-                <FilterProvider>
-                  <CommonLayout>{children}</CommonLayout>
-                  <Toaster
-                    position="top-right"
-                    richColors
-                    closeButton
-                    duration={4000}
-                  />
-                  <Footer />
-                </FilterProvider>
-              </ProtectedRoute>
+              <FilterProvider>
+                <ProtectedRoute>{children}</ProtectedRoute>
+                <Toaster
+                  position="top-right"
+                  richColors
+                  closeButton
+                  duration={4000}
+                />
+              </FilterProvider>
             </AuthProvider>
           </ThemeProvider>
         </StoreProvider>

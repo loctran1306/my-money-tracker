@@ -23,7 +23,7 @@ import {
   CollapsibleTrigger,
 } from '@radix-ui/react-collapsible';
 import { List, Pencil, Trash2 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const CategoriesPage = () => {
   const [alert, setAlert] = useState<string | null>(null);
@@ -31,12 +31,31 @@ const CategoriesPage = () => {
     'success'
   );
   const [categoryEdit, setCategoryEdit] = useState<Category | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isMdScreen, setIsMdScreen] = useState(false);
 
   const categories = useAppSelector((state) => state.category.categories);
   const transactions = useAppSelector(
     (state) => state.transactions.transactions
   );
   const dispatch = useAppDispatch();
+
+  // Kiểm tra breakpoint md
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMdScreen(window.innerWidth >= 768); // md breakpoint
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
+
+  // Tự động mở Collapsible khi ở md trở lên
+  useEffect(() => {
+    setIsOpen(isMdScreen);
+  }, [isMdScreen]);
+
   const handleDelete = async (id: string) => {
     const result = await categoryServices.deleteCategory(id);
     if (result.error) {
@@ -97,7 +116,7 @@ const CategoriesPage = () => {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 ">
-      <Collapsible className="w-full">
+      <Collapsible className="w-full" open={isOpen} onOpenChange={setIsOpen}>
         <CollapsibleTrigger className="w-full">
           <div className="flex items-center gap-2">
             <span className="font-bold">Thêm danh mục</span>
@@ -157,7 +176,7 @@ const CategoriesPage = () => {
           <Table className="w-full">
             <TableHeader className="text-xs font-bold border rounded-lg bg-gray-100 dark:bg-gray-800 text-center">
               <TableRow>
-                <TableHead className="border w-[100px]">danh mục</TableHead>
+                <TableHead className="border w-[100px]">Danh mục</TableHead>
                 <TableHead className="border">Hạn mức</TableHead>
                 <TableHead className="border">Chi tiêu</TableHead>
                 <TableHead className="border">Còn lại</TableHead>
@@ -180,9 +199,15 @@ const CategoriesPage = () => {
                     <TableCell className="border text-left">
                       {category.name}
                     </TableCell>
-                    <TableCell className="border">{category.limit}</TableCell>
-                    <TableCell className="border">{totalExpense}</TableCell>
-                    <TableCell className="border">{remaining}</TableCell>
+                    <TableCell className="border">
+                      {formatCurrency(category.limit)}
+                    </TableCell>
+                    <TableCell className="border">
+                      {formatCurrency(totalExpense)}
+                    </TableCell>
+                    <TableCell className="border">
+                      {formatCurrency(remaining)}
+                    </TableCell>
                   </TableRow>
                 );
               })}
