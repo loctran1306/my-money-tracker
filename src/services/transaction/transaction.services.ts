@@ -114,7 +114,7 @@ const transactionServices = {
     try {
       let queryStats = supabase
         .from('transactions')
-        .select('type, amount')
+        .select('type, amount, credit_card_id')
         .eq('user_id', userId);
 
       if (startDate && endDate) {
@@ -141,10 +141,15 @@ const transactionServices = {
         .filter((t) => t.type === 'expense')
         .reduce((sum, t) => sum + t.amount, 0);
 
+      const creditCard = data
+        .filter((t) => t.type === 'expense' && t.credit_card_id !== null)
+        .reduce((sum, t) => sum + t.amount, 0);
+
       const stats = {
         [STATS_MENU.INCOME]: income,
-        [STATS_MENU.EXPENSE]: expense,
-        [STATS_MENU.BALANCE]: income - expense,
+        [STATS_MENU.EXPENSE]: expense - creditCard,
+        [STATS_MENU.BALANCE]: income - expense + creditCard,
+        [STATS_MENU.CREDIT_CARD]: -creditCard,
       };
 
       return { stats, error: null };

@@ -8,7 +8,13 @@ import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { selectUser } from '@/store/selectors/userSelectors';
 import { fetchTransactionStats } from '@/store/thunks/transactionThunk';
 import { formatCurrency } from '@/utils/func';
-import { RefreshCw, TrendingDown, TrendingUp, Wallet } from 'lucide-react';
+import {
+  CreditCard,
+  RefreshCw,
+  TrendingDown,
+  TrendingUp,
+  Wallet,
+} from 'lucide-react';
 import { useContext } from 'react';
 
 const statsMenu = [
@@ -29,6 +35,12 @@ const statsMenu = [
     title: STATS_MENU_TITLE[STATS_MENU.EXPENSE],
     icon: TrendingDown,
     color: 'text-red-600',
+  },
+  {
+    id: STATS_MENU.CREDIT_CARD,
+    title: STATS_MENU_TITLE[STATS_MENU.CREDIT_CARD],
+    icon: CreditCard,
+    color: 'text-yellow-600',
   },
 ];
 

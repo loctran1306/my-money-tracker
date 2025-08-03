@@ -26,6 +26,7 @@ export const STATS_MENU = {
   EXPENSE: 'expense',
   BALANCE: 'balance',
   TRANSACTION: 'transaction',
+  CREDIT_CARD: 'credit_card',
 };
 
 export const STATS_MENU_TITLE = {
@@ -33,6 +34,7 @@ export const STATS_MENU_TITLE = {
   [STATS_MENU.EXPENSE]: 'Chi tiêu',
   [STATS_MENU.BALANCE]: 'Số dư',
   [STATS_MENU.TRANSACTION]: 'Giao dịch',
+  [STATS_MENU.CREDIT_CARD]: 'Chi tiêu thẻ',
 };
 
 export const MONTHS = [
