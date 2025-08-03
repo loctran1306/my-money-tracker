@@ -125,7 +125,13 @@ const CategoriesPage = () => {
         </CollapsibleTrigger>
         <CollapsibleContent className="mt-2 flex flex-col gap-2">
           {alert && <CustomAlert title={alert} type={alertType} />}
-          <div className="grid grid-cols-1 gap-2 scroll-smooth max-h-80 overflow-y-auto">
+          <div
+            className="grid grid-cols-1 gap-2 scroll-smooth max-h-80 overflow-y-auto"
+            style={{
+              scrollbarWidth: 'thin',
+              scrollbarColor: 'gray transparent',
+            }}
+          >
             {categories.map((category: Category) => (
               <div
                 key={category.id}

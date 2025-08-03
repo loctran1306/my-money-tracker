@@ -1,5 +1,6 @@
 import { FilterContext } from '@/contexts/FilterContext';
 import { useAppDispatch } from '@/hooks/redux';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { setTransactionEdit } from '@/store/slices/transactionSlice';
 import { CreditCard, Home, List, Plus, Settings, X } from 'lucide-react';
 import Link from 'next/link';
@@ -24,6 +25,7 @@ export default function BottomNav() {
   const pathname = usePathname();
   const dispatch = useAppDispatch();
   const isActive = (href: string) => pathname === href;
+  const isMobile = useIsMobile();
   return (
     <nav className="fixed bottom-0 left-0 right-0  z-50 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 flex justify-between items-start h-17 md:hidden">
       {navItems.map((item) => {
@@ -34,7 +36,7 @@ export default function BottomNav() {
                 open={openTransactionForm}
                 onOpenChange={(open) => {
                   setOpenTransactionForm(open);
-                  if (!open) {
+                  if (!open && isMobile) {
                     dispatch(setTransactionEdit(null));
                   }
                 }}

@@ -31,11 +31,7 @@ const TransactionList = ({ isDashboard = false }: TransactionListProps) => {
   );
 
   useEffect(() => {
-    if (isDashboard) {
-      setTransactionList(transactions.slice(0, 5));
-    } else {
-      setTransactionList(transactions);
-    }
+    setTransactionList(transactions);
   }, [transactions, isDashboard]);
 
   const handleDelete = async (id: string) => {
@@ -101,7 +97,13 @@ const TransactionList = ({ isDashboard = false }: TransactionListProps) => {
   return (
     <Card className="w-full border-none p-0 bg-transparent shadow-none">
       <CardContent className="p-0">
-        <div className="space-y-4 ">
+        <div
+          className="space-y-4 max-h-[450px] overflow-y-auto"
+          style={{
+            scrollbarWidth: 'thin',
+            scrollbarColor: 'gray transparent',
+          }}
+        >
           {transactionList.map((transaction: Transaction) => (
             <div
               key={transaction.id}
