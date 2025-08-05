@@ -15,12 +15,14 @@ const statsMenu = [
     title: STATS_MENU_TITLE[STATS_MENU.BALANCE],
     icon: Wallet,
     color: 'text-blue-600',
+    bgColor: 'bg-blue-100',
   },
   {
     id: STATS_MENU.EXPENSE,
     title: STATS_MENU_TITLE[STATS_MENU.EXPENSE],
     icon: TrendingDown,
     color: 'text-red-600',
+    bgColor: 'bg-red-100',
   },
 ];
 
@@ -84,9 +86,14 @@ const CreditStats = () => {
             return card.current_balance;
           };
           return (
-            <Card key={card.id + stat.id} className="p-2 gap-2">
+            <Card
+              key={card.id + stat.id}
+              className={`p-2 gap-2 ${stat.bgColor}`}
+            >
               <CardHeader className="flex flex-row items-center justify-between px-2">
-                <CardTitle className="text-sm font-bold">{title}</CardTitle>
+                <CardTitle className="text-sm font-bold text-gray-500">
+                  {title}
+                </CardTitle>
                 <stat.icon className={`h-4 w-4 ${stat.color}`} />
               </CardHeader>
               <CardContent className="px-2">

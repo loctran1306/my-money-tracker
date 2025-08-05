@@ -3,7 +3,10 @@ import { supabase } from '@/lib/supabase';
 export const categoryServices = {
   getCategories: async () => {
     try {
-      const { data, error } = await supabase.from('categories').select('*');
+      const { data, error } = await supabase
+        .from('categories')
+        .select('*')
+        .order('name', { ascending: true });
       return { data, error };
     } catch (error: unknown) {
       return { data: [], error: (error as Error).message };

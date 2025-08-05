@@ -1,6 +1,13 @@
 'use client';
 
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { FilterContext } from '@/contexts/FilterContext';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { Transaction } from '@/services/transaction/transaction.type';
@@ -9,10 +16,11 @@ import { setTransactionEdit } from '@/store/slices/transactionSlice';
 import { removeTransaction } from '@/store/thunks/transactionThunk';
 import { formatCurrency } from '@/utils/func';
 import { format } from 'date-fns';
-import { Edit, Trash2 } from 'lucide-react';
+import { Edit, ListFilter, Trash2 } from 'lucide-react';
 import { useContext, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import IconButton from '../shared/IconButton';
+import { Checkbox } from '../ui/checkbox';
 
 type TransactionListProps = {
   isDashboard?: boolean;
@@ -22,6 +30,7 @@ const TransactionList = ({ isDashboard = false }: TransactionListProps) => {
   const { setOpenTransactionForm } = useContext(FilterContext);
 
   const [transactionList, setTransactionList] = useState<Transaction[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
@@ -29,10 +38,22 @@ const TransactionList = ({ isDashboard = false }: TransactionListProps) => {
   const { transactions, loading, error } = useAppSelector(
     (state) => state.transactions
   );
+  const { categories } = useAppSelector((state) => state.category);
 
   useEffect(() => {
     setTransactionList(transactions);
   }, [transactions, isDashboard]);
+
+  useEffect(() => {
+    if (selectedCategories.length > 0) {
+      const newTransactionList = transactions.filter((transaction) =>
+        selectedCategories.includes(transaction.category_id || '')
+      );
+      setTransactionList(newTransactionList);
+    } else {
+      setTransactionList(transactions);
+    }
+  }, [selectedCategories, transactions]);
 
   const handleDelete = async (id: string) => {
     if (!user) return;
@@ -62,6 +83,16 @@ const TransactionList = ({ isDashboard = false }: TransactionListProps) => {
 
   const formatDate = (dateString: string) => {
     return format(new Date(dateString), 'dd/MM HH:mm');
+  };
+
+  const handleFilter = (categoryId: string) => {
+    if (selectedCategories.includes(categoryId)) {
+      setSelectedCategories(
+        selectedCategories.filter((id) => id !== categoryId)
+      );
+    } else {
+      setSelectedCategories([...selectedCategories, categoryId]);
+    }
   };
 
   if (loading) {
@@ -95,10 +126,54 @@ const TransactionList = ({ isDashboard = false }: TransactionListProps) => {
   }
 
   return (
-    <Card className="w-full border-none p-0 bg-transparent shadow-none">
+    <Card className="w-full border-none p-0 bg-transparent shadow-none mt-4">
+      <div className="flex items-center justify-between">
+        <span className="font-bold">Danh sách giao dịch</span>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-8 h-8 cursor-pointer"
+              onClick={() => {
+                setSelectedCategories([]);
+              }}
+            >
+              <ListFilter className="h-4 w-4" color="green" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            className="w-48 max-h-[300px] overflow-y-auto"
+            align="end"
+            style={{
+              scrollbarWidth: 'thin',
+              scrollbarColor: 'gray transparent',
+            }}
+          >
+            {categories.map((category) => (
+              <DropdownMenuItem
+                key={category.id}
+                className="cursor-pointer text-sm"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleFilter(category.id);
+                }}
+              >
+                <Checkbox
+                  className="mr-2"
+                  checked={selectedCategories.includes(category.id)}
+                />
+                {category.name}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
       <CardContent className="p-0">
         <div
-          className="space-y-4 max-h-[450px] overflow-y-auto"
+          className={`space-y-4 max-h-[450px] overflow-y-auto ${
+            isDashboard ? 'max-h-[450px]' : 'max-h-[620px] md:max-h-[980px]'
+          }`}
           style={{
             scrollbarWidth: 'thin',
             scrollbarColor: 'gray transparent',
@@ -107,7 +182,9 @@ const TransactionList = ({ isDashboard = false }: TransactionListProps) => {
           {transactionList.map((transaction: Transaction) => (
             <div
               key={transaction.id}
-              className="flex items-center justify-between p-2 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+              className={`flex items-center justify-between p-2 border rounded-lg transition-colors ${
+                transaction.type === 'income' ? 'bg-green-50' : 'bg-red-50'
+              }`}
             >
               <div className="p-2 rounded-md w-65 space-y-1">
                 <div className="flex flex-row items-center justify-between gap-2">

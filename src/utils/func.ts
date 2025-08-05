@@ -14,24 +14,19 @@ export const formatCurrency = (amount: number) => {
 };
 
 export const calculateExpression = (expression: string): number | null => {
-  try {
-    // Loại bỏ khoảng trắng
-    const cleanExpression = expression.replace(/\s/g, '');
+  const cleanExpression = expression.replace(/\s/g, '');
 
-    if (!/^[\d+\-*/().]+$/.test(cleanExpression)) {
-      return null;
-    }
-
-    const result = Function(`'use strict'; return (${cleanExpression})`)();
-
-    if (typeof result !== 'number' || !isFinite(result)) {
-      return null;
-    }
-
-    return result;
-  } catch (error) {
+  if (!/^[\d+\-*/().]+$/.test(cleanExpression)) {
     return null;
   }
+
+  const result = Function(`'use strict'; return (${cleanExpression})`)();
+
+  if (typeof result !== 'number' || !isFinite(result)) {
+    return null;
+  }
+
+  return result;
 };
 
 export const calculateAndFormat = (expression: string): number | string => {

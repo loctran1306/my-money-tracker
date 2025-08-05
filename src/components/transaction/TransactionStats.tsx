@@ -23,24 +23,28 @@ const statsMenu = [
     title: STATS_MENU_TITLE[STATS_MENU.INCOME],
     icon: TrendingUp,
     color: 'text-green-600',
+    bgColor: 'bg-green-100',
   },
   {
     id: STATS_MENU.BALANCE,
     title: STATS_MENU_TITLE[STATS_MENU.BALANCE],
     icon: Wallet,
     color: 'text-blue-600',
+    bgColor: 'bg-blue-100',
   },
   {
     id: STATS_MENU.EXPENSE,
     title: STATS_MENU_TITLE[STATS_MENU.EXPENSE],
     icon: TrendingDown,
     color: 'text-red-600',
+    bgColor: 'bg-red-100',
   },
   {
     id: STATS_MENU.CREDIT_CARD,
     title: STATS_MENU_TITLE[STATS_MENU.CREDIT_CARD],
     icon: CreditCard,
     color: 'text-yellow-600',
+    bgColor: 'bg-yellow-100',
   },
 ];
 
@@ -102,9 +106,11 @@ const TransactionStats = () => {
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
       {statsMenu.map((stat) => (
-        <Card key={stat.id} className="p-2 gap-2">
+        <Card key={stat.id} className={`p-2 gap-2 ${stat.bgColor}`}>
           <CardHeader className="flex flex-row items-center justify-between px-2">
-            <CardTitle className="text-sm font-bold">{stat.title}</CardTitle>
+            <CardTitle className="text-sm font-bold text-gray-500">
+              {stat.title}
+            </CardTitle>
             <stat.icon className={`h-4 w-4 ${stat.color}`} />
           </CardHeader>
           <CardContent className="px-2">

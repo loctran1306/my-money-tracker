@@ -11,7 +11,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
 import IconButton from './IconButton';
@@ -72,8 +71,6 @@ const Header = ({ isOpen, handleToggleSidebar }: HeaderProps) => {
               className="w-full min-w-[100px] max-h-[300px] overflow-y-auto"
               align="start"
             >
-              <DropdownMenuSeparator />
-
               {MONTHS.map((month) => (
                 <DropdownMenuItem
                   key={month.value}

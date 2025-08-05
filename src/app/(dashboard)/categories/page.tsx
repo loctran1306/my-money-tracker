@@ -3,14 +3,6 @@ import CategoryForm from '@/components/category/CategoryForm';
 import CustomAlert from '@/components/shared/custom-alert';
 import IconButton from '@/components/shared/IconButton';
 import { Badge } from '@/components/ui/badge';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { categoryServices } from '@/services/category/category.services';
 import { Category } from '@/services/category/category.type';
@@ -179,46 +171,113 @@ const CategoriesPage = () => {
       <div className="flex flex-col gap-2">
         <span className="font-bold">Danh mục chi tiêu</span>
         {categories && categories.length > 0 && (
-          <Table className="w-full">
-            <TableHeader className="text-xs font-bold border rounded-lg bg-gray-100 dark:bg-gray-800 text-center">
-              <TableRow>
-                <TableHead className="border w-[100px]">Danh mục</TableHead>
-                <TableHead className="border">Hạn mức</TableHead>
-                <TableHead className="border">Chi tiêu</TableHead>
-                <TableHead className="border">Còn lại</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody className="text-xs border rounded-lg text-center bg-white dark:bg-gray-800">
-              {categories.map((category: Category) => {
-                const totalExpense = transactions
-                  .filter(
-                    (transaction: Transaction) =>
-                      transaction.category_id === category.id
-                  )
-                  .reduce((acc, curr) => acc + curr.amount, 0);
+          <div
+            className="grid grid-cols-1"
+            style={{
+              scrollbarWidth: 'thin',
+              scrollbarColor: 'gray transparent',
+            }}
+          >
+            <div className="grid grid-cols-4 gap-2 border rounded-t-lg p-2 bg-gray-100 dark:bg-gray-800 text-center">
+              <div className="md:w-2/3 text-left">
+                <span className="text-xs font-bold">Danh mục</span>
+              </div>
 
-                const remaining = category.limit
-                  ? category.limit - totalExpense
-                  : 0;
-                return (
-                  <TableRow key={category.id}>
-                    <TableCell className="border text-left">
-                      {category.name}
-                    </TableCell>
-                    <TableCell className="border">
+              <div className="md:w-25 text-right">
+                <span className="text-xs font-bold">Hạn mức</span>
+              </div>
+              <div className="md:w-25 text-right">
+                <span className="text-xs font-bold">Chi tiêu</span>
+              </div>
+              <div className="md:w-25 text-right">
+                <span className="text-xs font-bold">Còn lại</span>
+              </div>
+            </div>
+            <div className="flex flex-col">
+              {categories.map((category: Category) => (
+                <div
+                  key={category.id}
+                  className="grid grid-cols-4 p-2 bg-white dark:bg-gray-800 text-center border border-t-0 border-gray-200 dark:border-gray-700"
+                >
+                  <div className="md:w-2/3 j text-left border-r">
+                    <span className="text-xs font-bold">{category.name}</span>
+                  </div>
+                  <div className="md:w-2/3 text-right border-r pr-1">
+                    <span className="text-xs font-bold">
                       {formatCurrency(category.limit)}
-                    </TableCell>
-                    <TableCell className="border">
-                      {formatCurrency(totalExpense)}
-                    </TableCell>
-                    <TableCell className="border">
-                      {formatCurrency(remaining)}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
+                    </span>
+                  </div>
+                  <div className="md:w-2/3 text-right border-r pr-1">
+                    <span className="text-xs font-bold">
+                      {formatCurrency(
+                        transactions
+                          .filter(
+                            (transaction: Transaction) =>
+                              transaction.category_id === category.id
+                          )
+                          .reduce((acc, curr) => acc + curr.amount, 0)
+                      )}
+                    </span>
+                  </div>
+                  <div className="md:w-2/3 text-right">
+                    <span className="text-xs font-bold">
+                      {formatCurrency(
+                        category.limit -
+                          transactions
+                            .filter(
+                              (transaction: Transaction) =>
+                                transaction.category_id === category.id
+                            )
+                            .reduce((acc, curr) => acc + curr.amount, 0)
+                      )}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          // <Table className="w-full">
+          //   <TableHeader className="text-xs font-bold border rounded-lg bg-gray-100 dark:bg-gray-800 text-center">
+          //     <TableRow>
+          //       <TableHead className="border w-[100px] ">
+          //         Danh mục
+          //       </TableHead>
+          //       <TableHead className="border">Hạn mức</TableHead>
+          //       <TableHead className="border">Chi tiêu</TableHead>
+          //       <TableHead className="border">Còn lại</TableHead>
+          //     </TableRow>
+          //   </TableHeader>
+          //   <TableBody className="text-xs border rounded-lg text-center bg-white dark:bg-gray-800">
+          //     {categories.map((category: Category) => {
+          //       const totalExpense = transactions
+          //         .filter(
+          //           (transaction: Transaction) =>
+          //             transaction.category_id === category.id
+          //         )
+          //         .reduce((acc, curr) => acc + curr.amount, 0);
+
+          //       const remaining = category.limit
+          //         ? category.limit - totalExpense
+          //         : 0;
+          //       return (
+          //         <TableRow key={category.id}>
+          //           <TableCell className="border text-left">
+          //             {category.name}
+          //           </TableCell>
+          //           <TableCell className="border">
+          //             {formatCurrency(category.limit)}
+          //           </TableCell>
+          //           <TableCell className="border">
+          //             {formatCurrency(totalExpense)}
+          //           </TableCell>
+          //           <TableCell className="border">
+          //             {formatCurrency(remaining)}
+          //           </TableCell>
+          //         </TableRow>
+          //       );
+          //     })}
+          //   </TableBody>
+          // </Table>
         )}
       </div>
     </div>
