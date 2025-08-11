@@ -49,6 +49,20 @@ const TransactionList = ({ isDashboard = false }: TransactionListProps) => {
       const newTransactionList = transactions.filter((transaction) =>
         selectedCategories.includes(transaction.category_id || '')
       );
+      if (selectedCategories.includes('income')) {
+        const income = transactions.filter(
+          (transaction) =>
+            transaction.type === 'income' && transaction.credit_card_id === null
+        );
+        newTransactionList.push(...income);
+      }
+      if (selectedCategories.includes('payCreditCard')) {
+        const payCreditCard = transactions.filter(
+          (transaction) =>
+            transaction.type === 'income' && transaction.credit_card_id !== null
+        );
+        newTransactionList.push(...payCreditCard);
+      }
       setTransactionList(newTransactionList);
     } else {
       setTransactionList(transactions);
@@ -150,6 +164,34 @@ const TransactionList = ({ isDashboard = false }: TransactionListProps) => {
               scrollbarColor: 'gray transparent',
             }}
           >
+            <DropdownMenuItem
+              key={'income'}
+              className="cursor-pointer text-sm"
+              onClick={(e) => {
+                e.preventDefault();
+                handleFilter('income');
+              }}
+            >
+              <Checkbox
+                className="mr-2"
+                checked={selectedCategories.includes('income')}
+              />
+              Thu nhập
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              key={'payCreditCard'}
+              className="cursor-pointer text-sm"
+              onClick={(e) => {
+                e.preventDefault();
+                handleFilter('payCreditCard');
+              }}
+            >
+              <Checkbox
+                className="mr-2"
+                checked={selectedCategories.includes('payCreditCard')}
+              />
+              Trả thẻ
+            </DropdownMenuItem>
             {categories.map((category) => (
               <DropdownMenuItem
                 key={category.id}
