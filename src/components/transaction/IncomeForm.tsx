@@ -6,11 +6,13 @@ import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { TransactionInput } from '@/services/transaction/transaction.type';
 import { selectUser } from '@/store/selectors/userSelectors';
 import { setTransactionEdit } from '@/store/slices/transactionSlice';
+import { Label } from '@radix-ui/react-dropdown-menu';
 import { vi } from 'date-fns/locale';
 import { RotateCcw, Send } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import CustomAlert from '../shared/custom-alert';
 import { DateTimePicker } from '../shared/DateTimePicker';
+import { Checkbox } from '../ui/checkbox';
 import { TransactionData } from './CardTransaction';
 
 interface IncomeFormProps {
@@ -23,16 +25,18 @@ const IncomeForm = ({ onSubmit }: IncomeFormProps) => {
   const transactionEdit = useAppSelector(
     (state) => state.transactions.transactionEdit
   );
+  const creditCards = useAppSelector((state) => state.creditCard.creditCards);
   const loading = useAppSelector((state) => state.transactions.loading);
   const [date24, setDate24] = useState<Date | undefined>(new Date());
   const [showError, setShowError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     amount: 0,
     description: '',
+    credit_card: '',
   });
 
   const resetForm = () => {
-    setFormData({ amount: 0, description: '' });
+    setFormData({ amount: 0, description: '', credit_card: '' });
     setDate24(new Date());
     setShowError(null);
     dispatch(setTransactionEdit(null));
@@ -43,6 +47,7 @@ const IncomeForm = ({ onSubmit }: IncomeFormProps) => {
       setFormData({
         amount: transactionEdit.amount,
         description: transactionEdit.note,
+        credit_card: transactionEdit.credit_card_id || '',
       });
     }
   }, [transactionEdit]);
@@ -65,6 +70,7 @@ const IncomeForm = ({ onSubmit }: IncomeFormProps) => {
       note: formData.description,
       date: date24?.toISOString() || new Date().toISOString(),
       user_id: user.id,
+      credit_card_id: formData.credit_card,
     };
 
     onSubmit(transactionData);
@@ -134,6 +140,30 @@ const IncomeForm = ({ onSubmit }: IncomeFormProps) => {
           granularity="minute"
         />
       </div>
+      {creditCards.length > 0 && (
+        <div className="grid grid-cols-2 gap-2">
+          {creditCards.map((card) => (
+            <Label
+              key={card.id}
+              className="hover:bg-accent/50 flex items-start gap-3 rounded-lg border p-3 has-[[aria-checked=true]]:border-blue-600 has-[[aria-checked=true]]:bg-blue-50 dark:has-[[aria-checked=true]]:border-blue-900 dark:has-[[aria-checked=true]]:bg-blue-950"
+            >
+              <Checkbox
+                id={card.id}
+                checked={formData.credit_card === card.id}
+                onCheckedChange={(checked) => {
+                  setFormData((prev) => ({
+                    ...prev,
+                    credit_card: checked ? card.id : '',
+                  }));
+                }}
+              />
+              <p className="text-xs leading-none font-medium">
+                {card.card_name.slice(0, 10)}
+              </p>
+            </Label>
+          ))}
+        </div>
+      )}
 
       {/* Buttons */}
       <div className="flex gap-3 ">

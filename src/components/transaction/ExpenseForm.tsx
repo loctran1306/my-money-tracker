@@ -49,6 +49,7 @@ const ExpenseForm = ({ onSubmit }: ExpenseFormProps) => {
     category: '',
     credit_card: '',
   });
+  const [total, setTotal] = useState(0);
   const dispatch = useAppDispatch();
   const transactionEdit = useAppSelector(
     (state) => state.transactions.transactionEdit
@@ -126,6 +127,22 @@ const ExpenseForm = ({ onSubmit }: ExpenseFormProps) => {
     return category ? category.name : 'Chọn danh mục';
   };
 
+  const sumNumbersInString = (str: string) => {
+    // Tìm tất cả các chuỗi số liên tiếp
+    const matches = str.match(/\d+/g);
+
+    if (!matches) {
+      return 0; // Không có số nào
+    }
+
+    // Chuyển từng chuỗi số thành số nguyên và cộng lại
+    return matches.reduce((sum, num) => sum + Number(num), 0);
+  };
+  useEffect(() => {
+    const total = sumNumbersInString(formData.description);
+    setTotal(total);
+  }, [formData.description]);
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Alert */}
@@ -183,7 +200,7 @@ const ExpenseForm = ({ onSubmit }: ExpenseFormProps) => {
       </div>
 
       {/* Mô tả */}
-      <div className="flex flex-row gap-2">
+      <div className="flex flex-col gap-2">
         <Input
           type="text"
           placeholder="Nhập mô tả giao dịch"
@@ -191,6 +208,9 @@ const ExpenseForm = ({ onSubmit }: ExpenseFormProps) => {
           onChange={(e) => handleInputChange('description', e.target.value)}
           className="h-12 text-base"
         />
+        {total > 0 && (
+          <span className="text-sm text-red-500">Tổng: {total}</span>
+        )}
       </div>
 
       {/* Danh mục */}

@@ -134,7 +134,10 @@ const transactionServices = {
 
       // Tính toán thống kê
       const income = data
-        .filter((t) => t.type === 'income')
+        .filter((t) => t.type === 'income' && t.credit_card_id === null)
+        .reduce((sum, t) => sum + t.amount, 0);
+      const payCreditCard = data
+        .filter((t) => t.type === 'income' && t.credit_card_id !== null)
         .reduce((sum, t) => sum + t.amount, 0);
 
       const expense = data
@@ -147,9 +150,9 @@ const transactionServices = {
 
       const stats = {
         [STATS_MENU.INCOME]: income,
-        [STATS_MENU.EXPENSE]: expense - creditCard,
-        [STATS_MENU.BALANCE]: income - expense + creditCard,
-        [STATS_MENU.CREDIT_CARD]: -creditCard,
+        [STATS_MENU.EXPENSE]: expense - creditCard + payCreditCard,
+        [STATS_MENU.BALANCE]: income - expense + creditCard - payCreditCard,
+        [STATS_MENU.CREDIT_CARD]: -creditCard + payCreditCard,
       };
 
       return { stats, error: null };
