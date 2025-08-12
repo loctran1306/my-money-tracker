@@ -70,7 +70,7 @@ const IncomeForm = ({ onSubmit }: IncomeFormProps) => {
       note: formData.description,
       date: date24?.toISOString() || new Date().toISOString(),
       user_id: user.id,
-      credit_card_id: formData.credit_card,
+      credit_card_id: formData.credit_card ? formData.credit_card : null,
     };
 
     onSubmit(transactionData);
