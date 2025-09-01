@@ -63,6 +63,22 @@ const TransactionList = ({ isDashboard = false }: TransactionListProps) => {
         );
         newTransactionList.push(...payCreditCard);
       }
+      if (selectedCategories.includes('sacombank')) {
+        const payCreditCard = transactions.filter(
+          (transaction) =>
+            transaction.credit_card_id ===
+            'be4eceec-38d7-4115-a680-c68e319031d3'
+        );
+        newTransactionList.push(...payCreditCard);
+      }
+      if (selectedCategories.includes('mbbank')) {
+        const payCreditCard = transactions.filter(
+          (transaction) =>
+            transaction.credit_card_id ===
+            '8aa3d217-1e27-467c-8e28-2f28c6ed2bdd'
+        );
+        newTransactionList.push(...payCreditCard);
+      }
       setTransactionList(newTransactionList);
     } else {
       setTransactionList(transactions);
@@ -164,6 +180,34 @@ const TransactionList = ({ isDashboard = false }: TransactionListProps) => {
               scrollbarColor: 'gray transparent',
             }}
           >
+            <DropdownMenuItem
+              key={'sacombank'}
+              className="cursor-pointer text-sm"
+              onClick={(e) => {
+                e.preventDefault();
+                handleFilter('sacombank');
+              }}
+            >
+              <Checkbox
+                className="mr-2"
+                checked={selectedCategories.includes('sacombank')}
+              />
+              Thẻ SacomBank
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              key={'mbbank'}
+              className="cursor-pointer text-sm"
+              onClick={(e) => {
+                e.preventDefault();
+                handleFilter('mbbank');
+              }}
+            >
+              <Checkbox
+                className="mr-2"
+                checked={selectedCategories.includes('mbbank')}
+              />
+              Thẻ MBBank
+            </DropdownMenuItem>
             <DropdownMenuItem
               key={'income'}
               className="cursor-pointer text-sm"
