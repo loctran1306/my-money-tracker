@@ -136,9 +136,6 @@ const transactionServices = {
       const income = data
         .filter((t) => t.type === 'income' && t.credit_card_id === null)
         .reduce((sum, t) => sum + t.amount, 0);
-      const payCreditCard = data
-        .filter((t) => t.type === 'income' && t.credit_card_id !== null)
-        .reduce((sum, t) => sum + t.amount, 0);
 
       const expense = data
         .filter((t) => t.type === 'expense')
