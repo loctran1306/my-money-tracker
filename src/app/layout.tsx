@@ -3,7 +3,7 @@ import StoreProvider from '@/components/StoreProvider';
 import { ThemeProvider } from '@/components/ui/theme-provider';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { FilterProvider } from '@/contexts/FilterContext';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { Toaster } from 'sonner';
 import './globals.css';
@@ -22,6 +22,18 @@ export const metadata: Metadata = {
   title: 'My Money Tracker - Quản lý tài chính cá nhân',
   description:
     'Ứng dụng quản lý tài chính cá nhân thông minh, giúp theo dõi chi tiêu và tiết kiệm hiệu quả',
+  icons: {
+    icon: '/favicon.ico',
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: '#000000',
+  // Hoặc tùy biến theo theme hệ thống:
+  // themeColor: [
+  //   { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+  //   { media: '(prefers-color-scheme: dark)', color: '#000000' },
+  // ],
 };
 
 export default function RootLayout({

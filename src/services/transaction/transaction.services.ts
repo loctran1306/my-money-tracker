@@ -144,15 +144,19 @@ const transactionServices = {
         .filter((t) => t.type === 'expense')
         .reduce((sum, t) => sum + t.amount, 0);
 
+      const expenseOtherCreditCard = data
+        .filter((t) => t.type === 'expense' && t.credit_card_id === null)
+        .reduce((sum, t) => sum + t.amount, 0);
+
       const creditCard = data
         .filter((t) => t.type === 'expense' && t.credit_card_id !== null)
         .reduce((sum, t) => sum + t.amount, 0);
 
       const stats = {
         [STATS_MENU.INCOME]: income,
-        [STATS_MENU.EXPENSE]: expense - creditCard + payCreditCard,
-        [STATS_MENU.BALANCE]: income - expense + creditCard - payCreditCard,
-        [STATS_MENU.CREDIT_CARD]: -creditCard + payCreditCard,
+        [STATS_MENU.EXPENSE]: expense,
+        [STATS_MENU.BALANCE]: income - expenseOtherCreditCard,
+        [STATS_MENU.CREDIT_CARD]: creditCard,
       };
 
       return { stats, error: null };
