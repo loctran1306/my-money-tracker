@@ -27,7 +27,7 @@ export default function BottomNav() {
   const isActive = (href: string) => pathname === href;
   const isMobile = useIsMobile();
   return (
-    <nav className="fixed bottom-0 left-0 right-0  z-50 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 flex justify-between items-start h-17 md:hidden">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 flex justify-between items-start h-24 md:hidden">
       {navItems.map((item) => {
         if (item.href === '/stats/') {
           return (
