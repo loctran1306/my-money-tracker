@@ -9,7 +9,7 @@ import { setTransactionEdit } from '@/store/slices/transactionSlice';
 import { Label } from '@radix-ui/react-dropdown-menu';
 import { vi } from 'date-fns/locale';
 import { RotateCcw, Send } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import CustomAlert from '../shared/custom-alert';
 import { DateTimePicker } from '../shared/DateTimePicker';
 import { Checkbox } from '../ui/checkbox';
@@ -20,23 +20,38 @@ interface IncomeFormProps {
 }
 
 const IncomeForm = ({ onSubmit }: IncomeFormProps) => {
-  const dispatch = useAppDispatch();
-  const user = useAppSelector(selectUser);
-  const transactionEdit = useAppSelector(
-    (state) => state.transactions.transactionEdit
-  );
-  const creditCards = useAppSelector((state) => state.creditCard.creditCards);
   const loading = useAppSelector((state) => state.transactions.loading);
   const [date24, setDate24] = useState<Date | undefined>(new Date());
   const [showError, setShowError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     amount: 0,
     description: '',
-    credit_card: '',
+    wallet_id: '',
   });
 
+  const dispatch = useAppDispatch();
+  const user = useAppSelector(selectUser);
+  const transactionEdit = useAppSelector(
+    (state) => state.transactions.transactionEdit
+  );
+  const creditCards = useAppSelector((state) => state.creditCard.creditCards);
+  const defaultWalletId = useMemo(() => {
+    const findWallet = creditCards.find((card) => card.wallet_type === 'cash');
+    if (findWallet) {
+      setFormData((prev) => ({
+        ...prev,
+        wallet_id: findWallet.id,
+      }));
+      return findWallet.id;
+    }
+  }, [creditCards]);
+
   const resetForm = () => {
-    setFormData({ amount: 0, description: '', credit_card: '' });
+    setFormData({
+      amount: 0,
+      description: '',
+      wallet_id: defaultWalletId || '',
+    });
     setDate24(new Date());
     setShowError(null);
     dispatch(setTransactionEdit(null));
@@ -47,7 +62,7 @@ const IncomeForm = ({ onSubmit }: IncomeFormProps) => {
       setFormData({
         amount: transactionEdit.amount,
         description: transactionEdit.note,
-        credit_card: transactionEdit.credit_card_id || '',
+        wallet_id: transactionEdit.wallet_id || defaultWalletId || '',
       });
     }
   }, [transactionEdit]);
@@ -70,7 +85,7 @@ const IncomeForm = ({ onSubmit }: IncomeFormProps) => {
       note: formData.description,
       date: date24?.toISOString() || new Date().toISOString(),
       user_id: user.id,
-      credit_card_id: formData.credit_card ? formData.credit_card : null,
+      wallet_id: formData.wallet_id || defaultWalletId || '',
     };
 
     onSubmit(transactionData);
@@ -149,16 +164,16 @@ const IncomeForm = ({ onSubmit }: IncomeFormProps) => {
             >
               <Checkbox
                 id={card.id}
-                checked={formData.credit_card === card.id}
+                checked={formData.wallet_id === card.id}
                 onCheckedChange={(checked) => {
                   setFormData((prev) => ({
                     ...prev,
-                    credit_card: checked ? card.id : '',
+                    wallet_id: checked ? card.id : '',
                   }));
                 }}
               />
               <p className="text-xs leading-none font-medium">
-                {card.card_name.slice(0, 10)}
+                {card.display_name.slice(0, 10)}
               </p>
             </Label>
           ))}

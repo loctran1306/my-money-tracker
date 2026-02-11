@@ -11,9 +11,10 @@ export interface Transaction {
     name: string;
   };
   user_id: string;
-  credit_card_id: string | null;
-  credit_cards: {
-    card_name: string;
+  wallet_id: string | null;
+  wallets: {
+    wallet_type: string;
+    display_name: string;
   };
 }
 
@@ -40,5 +41,5 @@ export interface TransactionInput {
   note: string;
   category_id?: string;
   user_id: string;
-  credit_card_id?: string | null;
+  wallet_id?: string | null;
 }

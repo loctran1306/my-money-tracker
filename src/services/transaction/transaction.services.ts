@@ -12,7 +12,7 @@ const transactionServices = {
     try {
       let query = supabase
         .from('transactions')
-        .select('*, categories(name), credit_cards(card_name)')
+        .select('*, categories(name), wallets(wallet_type, display_name)')
         .eq('user_id', userId);
 
       // Filter theo date range nếu có
@@ -30,7 +30,11 @@ const transactionServices = {
       if (error) {
         return { data: [], error: error.message };
       }
-      return { data: data || [], error: null };
+      const newData = data.map((item) => ({
+        ...item,
+        wallet: Array.isArray(item.wallets) ? item.wallets[0] : item.wallets,
+      }));
+      return { data: newData || [], error: null };
     } catch (error: unknown) {
       return { data: [], error: (error as Error).message };
     }
@@ -114,7 +118,7 @@ const transactionServices = {
     try {
       let queryStats = supabase
         .from('transactions')
-        .select('type, amount, credit_card_id')
+        .select('type, amount, wallets(wallet_type)')
         .eq('user_id', userId);
 
       if (startDate && endDate) {
@@ -132,9 +136,14 @@ const transactionServices = {
         return { stats: null, error: error.message };
       }
 
+      // Helper: Supabase có thể trả wallets là object hoặc array
+      const walletType = (
+        w: { wallet_type?: string } | { wallet_type?: string }[] | null
+      ) => (Array.isArray(w) ? w[0]?.wallet_type : w?.wallet_type);
+
       // Tính toán thống kê
       const income = data
-        .filter((t) => t.type === 'income' && t.credit_card_id === null)
+        .filter((t) => t.type === 'income' && walletType(t.wallets) === 'cash')
         .reduce((sum, t) => sum + t.amount, 0);
 
       const expense = data
@@ -142,11 +151,11 @@ const transactionServices = {
         .reduce((sum, t) => sum + t.amount, 0);
 
       const expenseOtherCreditCard = data
-        .filter((t) => t.type === 'expense' && t.credit_card_id === null)
+        .filter((t) => t.type === 'expense' && walletType(t.wallets) === 'cash')
         .reduce((sum, t) => sum + t.amount, 0);
 
       const creditCard = data
-        .filter((t) => t.type === 'expense' && t.credit_card_id !== null)
+        .filter((t) => t.type === 'expense' && walletType(t.wallets) !== 'cash')
         .reduce((sum, t) => sum + t.amount, 0);
 
       const stats = {

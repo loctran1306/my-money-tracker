@@ -52,30 +52,30 @@ const TransactionList = ({ isDashboard = false }: TransactionListProps) => {
       if (selectedCategories.includes('income')) {
         const income = transactions.filter(
           (transaction) =>
-            transaction.type === 'income' && transaction.credit_card_id === null
+            transaction.type === 'income' &&
+            transaction.wallets.wallet_type === 'cash'
         );
         newTransactionList.push(...income);
       }
       if (selectedCategories.includes('payCreditCard')) {
         const payCreditCard = transactions.filter(
           (transaction) =>
-            transaction.type === 'income' && transaction.credit_card_id !== null
+            transaction.type === 'income' &&
+            transaction.wallets.wallet_type !== 'cash'
         );
         newTransactionList.push(...payCreditCard);
       }
       if (selectedCategories.includes('sacombank')) {
         const payCreditCard = transactions.filter(
           (transaction) =>
-            transaction.credit_card_id ===
-            'be4eceec-38d7-4115-a680-c68e319031d3'
+            transaction.wallet_id === 'be4eceec-38d7-4115-a680-c68e319031d3'
         );
         newTransactionList.push(...payCreditCard);
       }
       if (selectedCategories.includes('mbbank')) {
         const payCreditCard = transactions.filter(
           (transaction) =>
-            transaction.credit_card_id ===
-            '8aa3d217-1e27-467c-8e28-2f28c6ed2bdd'
+            transaction.wallet_id === '8aa3d217-1e27-467c-8e28-2f28c6ed2bdd'
         );
         newTransactionList.push(...payCreditCard);
       }
@@ -296,9 +296,9 @@ const TransactionList = ({ isDashboard = false }: TransactionListProps) => {
                   <div className="text-xs text-gray-500">
                     {transaction.note}
                   </div>
-                  {transaction.credit_cards && (
+                  {transaction.wallets && (
                     <div className="text-xs text-blue-500 italic">
-                      {transaction.credit_cards.card_name}
+                      {transaction.wallets.display_name}
                     </div>
                   )}
                 </div>

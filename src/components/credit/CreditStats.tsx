@@ -76,35 +76,37 @@ const CreditStats = () => {
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-      {creditCards.map((card) =>
-        statsMenu.map((stat) => {
-          const title = `${stat.title} ${card.card_name.split(' ')[1].slice(0, 3)}`;
-          const renderTotal = () => {
-            if (stat.id === STATS_MENU.BALANCE) {
-              return card.credit_limit - card.current_balance;
-            }
-            return card.current_balance;
-          };
-          return (
-            <Card
-              key={card.id + stat.id}
-              className={`p-2 gap-2 ${stat.bgColor}`}
-            >
-              <CardHeader className="flex flex-row items-center justify-between px-2">
-                <CardTitle className="text-sm font-bold text-gray-500">
-                  {title}
-                </CardTitle>
-                <stat.icon className={`h-4 w-4 ${stat.color}`} />
-              </CardHeader>
-              <CardContent className="px-2">
-                <div className={`text-lg font-bold ${stat.color}`}>
-                  {formatCurrency(renderTotal() || 0)}
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })
-      )}
+      {creditCards
+        .filter((card) => card.wallet_type === 'credit')
+        .map((card) =>
+          statsMenu.map((stat) => {
+            const title = `${stat.title} ${card.display_name.slice(0, 10)}`;
+            const renderTotal = () => {
+              if (stat.id === STATS_MENU.BALANCE) {
+                return card.credit_limit - card.current_balance;
+              }
+              return card.current_balance;
+            };
+            return (
+              <Card
+                key={card.id + stat.id}
+                className={`p-2 gap-2 ${stat.bgColor}`}
+              >
+                <CardHeader className="flex flex-row items-center justify-between px-2">
+                  <CardTitle className="text-sm font-bold text-gray-500">
+                    {title}
+                  </CardTitle>
+                  <stat.icon className={`h-4 w-4 ${stat.color}`} />
+                </CardHeader>
+                <CardContent className="px-2">
+                  <div className={`text-lg font-bold ${stat.color}`}>
+                    {formatCurrency(renderTotal() || 0)}
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })
+        )}
     </div>
   );
 };

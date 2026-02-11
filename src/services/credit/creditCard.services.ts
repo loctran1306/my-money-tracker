@@ -3,7 +3,7 @@ import { supabase } from '@/lib/supabase';
 export const creditCardServices = {
   async getCreditCards(userId: string) {
     const { data, error } = await supabase
-      .from('credit_cards')
+      .from('wallets')
       .select('*')
       .eq('user_id', userId);
     if (error) {

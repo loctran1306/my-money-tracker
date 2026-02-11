@@ -16,7 +16,7 @@ import { selectUser } from '@/store/selectors/userSelectors';
 import { setTransactionEdit } from '@/store/slices/transactionSlice';
 import { Label } from '@radix-ui/react-dropdown-menu';
 import { ChevronDown, RotateCcw, Send } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import CustomAlert from '../shared/custom-alert';
 import { DateTimePicker } from '../shared/DateTimePicker';
 import { Checkbox } from '../ui/checkbox';
@@ -47,7 +47,7 @@ const ExpenseForm = ({ onSubmit }: ExpenseFormProps) => {
     amount: 0,
     description: '',
     category: '',
-    credit_card: '',
+    wallet_id: '',
   });
   const [total, setTotal] = useState(0);
   const dispatch = useAppDispatch();
@@ -56,6 +56,17 @@ const ExpenseForm = ({ onSubmit }: ExpenseFormProps) => {
   );
   const categories = useAppSelector((state) => state.category.categories);
   const creditCards = useAppSelector((state) => state.creditCard.creditCards);
+
+  const defaultWalletId = useMemo(() => {
+    const findWallet = creditCards.find((card) => card.wallet_type === 'cash');
+    if (findWallet) {
+      setFormData((prev) => ({
+        ...prev,
+        wallet_id: findWallet.id,
+      }));
+      return findWallet.id;
+    }
+  }, [creditCards]);
 
   const user = useAppSelector(selectUser);
   const loading = useAppSelector((state) => state.transactions.loading);
@@ -66,14 +77,19 @@ const ExpenseForm = ({ onSubmit }: ExpenseFormProps) => {
         amount: transactionEdit.amount,
         description: transactionEdit.note,
         category: transactionEdit.category_id || '',
-        credit_card: transactionEdit.credit_card_id || '',
+        wallet_id: transactionEdit.wallet_id || defaultWalletId || '',
       });
       setDate24(new Date(transactionEdit.date));
     }
   }, [transactionEdit]);
 
   const resetForm = () => {
-    setFormData({ amount: 0, description: '', category: '', credit_card: '' });
+    setFormData({
+      amount: 0,
+      description: '',
+      category: '',
+      wallet_id: defaultWalletId || '',
+    });
     setDate24(new Date());
     setShowError(null);
     dispatch(setTransactionEdit(null));
@@ -101,7 +117,7 @@ const ExpenseForm = ({ onSubmit }: ExpenseFormProps) => {
       note: formData.description,
       category_id: formData.category,
       date: date24 ? date24.toISOString() : new Date().toISOString(),
-      credit_card_id: formData.credit_card || null,
+      wallet_id: formData.wallet_id || defaultWalletId || '',
       user_id: user.id,
     };
 
@@ -240,16 +256,16 @@ const ExpenseForm = ({ onSubmit }: ExpenseFormProps) => {
             >
               <Checkbox
                 id={card.id}
-                checked={formData.credit_card === card.id}
+                checked={formData.wallet_id === card.id}
                 onCheckedChange={(checked) => {
                   setFormData((prev) => ({
                     ...prev,
-                    credit_card: checked ? card.id : '',
+                    wallet_id: checked ? card.id : '',
                   }));
                 }}
               />
               <p className="text-xs leading-none font-medium">
-                {card.card_name.slice(0, 10)}
+                {card.display_name.slice(0, 10)}
               </p>
             </Label>
           ))}
