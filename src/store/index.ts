@@ -3,6 +3,7 @@ import categoryReducer from './slices/categorySlice';
 import creditCardReducer from './slices/creditCardSlice';
 import transactionReducer from './slices/transactionSlice';
 import userReducer from './slices/userSlice';
+import walletReducer from './slices/wallet.slice';
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     creditCard: creditCardReducer,
     user: userReducer,
     category: categoryReducer,
+    wallet: walletReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

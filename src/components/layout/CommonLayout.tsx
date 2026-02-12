@@ -6,10 +6,11 @@ import { fetchCategories } from '@/store/thunks/categoryThunk';
 
 import { FilterContext } from '@/contexts/FilterContext';
 import { fetchCreditCards } from '@/store/thunks/creditCardThunk';
+import { fetchTransactions } from '@/store/thunks/transactionThunk';
 import {
-  fetchTransactions,
-  fetchTransactionStats,
-} from '@/store/thunks/transactionThunk';
+  getFinanceOverviewThunk,
+  getWalletsThunk,
+} from '@/store/thunks/wallet.thunk';
 import React, { useContext, useEffect, useState } from 'react';
 import BottomNav from '../shared/BottomNav';
 import Header from '../shared/Header';
@@ -33,14 +34,10 @@ const CommonLayout: React.FC<CommonLayoutProps> = ({ children }) => {
           endDate: dateRange.endDate,
         })
       );
-      dispatch(
-        fetchTransactionStats({
-          userId: user.id,
-          startDate: dateRange.startDate,
-          endDate: dateRange.endDate,
-        })
-      );
+
       dispatch(fetchCreditCards(user.id));
+      dispatch(getWalletsThunk(user.id));
+      dispatch(getFinanceOverviewThunk());
     }
   }, [user, dispatch, dateRange, timeRefresh]);
 

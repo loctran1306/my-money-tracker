@@ -6,15 +6,9 @@ import { STATS_MENU, STATS_MENU_TITLE } from '@/constants';
 import { FilterContext } from '@/contexts/FilterContext';
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { selectUser } from '@/store/selectors/userSelectors';
-import { fetchTransactionStats } from '@/store/thunks/transactionThunk';
+import { getFinanceOverviewThunk } from '@/store/thunks/wallet.thunk';
 import { formatCurrency } from '@/utils/func';
-import {
-  CreditCard,
-  RefreshCw,
-  TrendingDown,
-  TrendingUp,
-  Wallet,
-} from 'lucide-react';
+import { RefreshCw, TrendingUp, Wallet } from 'lucide-react';
 import { useContext } from 'react';
 
 const statsMenu = [
@@ -32,20 +26,6 @@ const statsMenu = [
     color: 'text-blue-600',
     bgColor: 'bg-blue-100',
   },
-  {
-    id: STATS_MENU.EXPENSE,
-    title: STATS_MENU_TITLE[STATS_MENU.EXPENSE],
-    icon: TrendingDown,
-    color: 'text-red-600',
-    bgColor: 'bg-red-100',
-  },
-  {
-    id: STATS_MENU.CREDIT_CARD,
-    title: STATS_MENU_TITLE[STATS_MENU.CREDIT_CARD],
-    icon: CreditCard,
-    color: 'text-yellow-600',
-    bgColor: 'bg-yellow-100',
-  },
 ];
 
 const TransactionStats = () => {
@@ -55,16 +35,16 @@ const TransactionStats = () => {
   const { stats, loading, error } = useAppSelector(
     (state) => state.transactions
   );
+  const { financeOverview } = useAppSelector((state) => state.wallet);
+
+  const newFinanceOverview = {
+    [STATS_MENU.INCOME]: financeOverview?.monthly_income,
+    [STATS_MENU.BALANCE]: financeOverview?.total_assets,
+  };
 
   const handleRefresh = () => {
     if (user?.id) {
-      dispatch(
-        fetchTransactionStats({
-          userId: user.id,
-          startDate: dateRange.startDate,
-          endDate: dateRange.endDate,
-        })
-      );
+      dispatch(getFinanceOverviewThunk());
     }
   };
 
@@ -115,9 +95,8 @@ const TransactionStats = () => {
           </CardHeader>
           <CardContent className="px-2">
             <div className={`text-lg font-bold ${stat.color} `}>
-              {stat.id !== STATS_MENU.TRANSACTION
-                ? formatCurrency(stats?.[stat.id] || 0)
-                : stats?.[stat.id] || 0}
+              {newFinanceOverview &&
+                formatCurrency(newFinanceOverview?.[stat.id] || 0)}
             </div>
           </CardContent>
         </Card>
