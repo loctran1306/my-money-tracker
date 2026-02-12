@@ -12,7 +12,9 @@ const transactionServices = {
     try {
       let query = supabase
         .from('transactions')
-        .select('*, categories(name), wallets(wallet_type, display_name)')
+        .select(
+          '*, categories(name), source_wallet:wallets!transactions_wallet_id_fkey(display_name, wallet_type),target_wallet:wallets!transactions_to_wallet_id_fkey(display_name, wallet_type)'
+        )
         .eq('user_id', userId);
 
       // Filter theo date range nếu có
@@ -118,7 +120,9 @@ const transactionServices = {
     try {
       let queryStats = supabase
         .from('transactions')
-        .select('type, amount, wallets(wallet_type)')
+        .select(
+          '*, categories(name), source_wallet:wallets!transactions_wallet_id_fkey(display_name, wallet_type),target_wallet:wallets!transactions_to_wallet_id_fkey(display_name, wallet_type)'
+        )
         .eq('user_id', userId);
 
       if (startDate && endDate) {
@@ -143,7 +147,9 @@ const transactionServices = {
 
       // Tính toán thống kê
       const income = data
-        .filter((t) => t.type === 'income' && walletType(t.wallets) === 'cash')
+        .filter(
+          (t) => t.type === 'income' && walletType(t.source_wallet) === 'cash'
+        )
         .reduce((sum, t) => sum + t.amount, 0);
 
       const expense = data
@@ -151,11 +157,15 @@ const transactionServices = {
         .reduce((sum, t) => sum + t.amount, 0);
 
       const expenseOtherCreditCard = data
-        .filter((t) => t.type === 'expense' && walletType(t.wallets) === 'cash')
+        .filter(
+          (t) => t.type === 'expense' && walletType(t.source_wallet) === 'cash'
+        )
         .reduce((sum, t) => sum + t.amount, 0);
 
       const creditCard = data
-        .filter((t) => t.type === 'expense' && walletType(t.wallets) !== 'cash')
+        .filter(
+          (t) => t.type === 'expense' && walletType(t.source_wallet) !== 'cash'
+        )
         .reduce((sum, t) => sum + t.amount, 0);
 
       const stats = {
