@@ -13,7 +13,7 @@ const transactionServices = {
       let query = supabase
         .from('transactions')
         .select(
-          '*, categories(name), source_wallet:wallets!transactions_wallet_id_fkey(display_name, wallet_type),target_wallet:wallets!transactions_to_wallet_id_fkey(display_name, wallet_type)'
+          '*, categories(name), wallets:wallets!transactions_wallet_id_fkey(display_name, wallet_type),to_wallets:wallets!transactions_to_wallet_id_fkey(display_name, wallet_type)'
         )
         .eq('user_id', userId);
 
