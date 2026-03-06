@@ -6,6 +6,7 @@ export const categoryServices = {
       const { data, error } = await supabase
         .from('categories')
         .select('*')
+        .is('deleted_at', null)
         .order('name', { ascending: true });
       return { data, error };
     } catch (error: unknown) {
@@ -30,11 +31,12 @@ export const categoryServices = {
       return { data: null, error: (error as Error).message };
     }
   },
+  // Soft delete category (cập nhật deleted_at thay vì xóa thật)
   async deleteCategory(id: string) {
     try {
       const { data, error } = await supabase
         .from('categories')
-        .delete()
+        .update({ deleted_at: new Date().toISOString() })
         .eq('id', id)
         .select('*')
         .single();

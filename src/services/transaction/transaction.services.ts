@@ -15,7 +15,8 @@ const transactionServices = {
         .select(
           '*, categories(name), wallets:wallets!transactions_wallet_id_fkey(display_name, wallet_type),to_wallets:wallets!transactions_to_wallet_id_fkey(display_name, wallet_type)'
         )
-        .eq('user_id', userId);
+        .eq('user_id', userId)
+        .is('deleted_at', null);
 
       // Filter theo date range nếu có
       if (startDate && endDate) {
@@ -82,7 +83,7 @@ const transactionServices = {
     }
   },
 
-  // Xóa transaction
+  // Soft delete transaction (cập nhật deleted_at thay vì xóa thật)
   deleteTransaction: async (id: string) => {
     try {
       // Lấy user hiện tại
@@ -97,7 +98,7 @@ const transactionServices = {
 
       const { error } = await supabase
         .from('transactions')
-        .delete()
+        .update({ deleted_at: new Date().toISOString() })
         .eq('id', id)
         .eq('user_id', user.id); // Chỉ cho phép xóa transaction của user hiện tại
 
@@ -123,7 +124,8 @@ const transactionServices = {
         .select(
           '*, categories(name), source_wallet:wallets!transactions_wallet_id_fkey(display_name, wallet_type),target_wallet:wallets!transactions_to_wallet_id_fkey(display_name, wallet_type)'
         )
-        .eq('user_id', userId);
+        .eq('user_id', userId)
+        .is('deleted_at', null);
 
       if (startDate && endDate) {
         const start =
